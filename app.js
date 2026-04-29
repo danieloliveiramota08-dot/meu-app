@@ -298,6 +298,23 @@ html += `</div>`;
 return html;
 }
 
+// ================= SALVAR MEMBRO =================
+function salvarMembroFirebase(nome, telefone){
+
+  db.collection("membros").add({
+    nome: nome,
+    telefone: telefone,
+    data: new Date().toLocaleString()
+  })
+  .then(() => {
+    alert("Membro salvo com sucesso 👤");
+  })
+  .catch((error) => {
+    console.error("Erro ao salvar:", error);
+  });
+
+}
+
 // ================= EDITAR =================
 function editarM(i){
 
@@ -1020,34 +1037,18 @@ function pedidosOracao(){
 }
 
 // ================= SALVAR PEDIDO =================
-function salvarPedido(){
+function salvarPedidoFirebase(texto){
 
-let texto = el("pedidoTexto").value.trim();
-
-if(!texto){
-alert("Digite um pedido 🙏");
-return;
-}
-
-let pedidos = get("pedidos_oracao");
-
-if(!Array.isArray(pedidos)){
-pedidos = [];
-}
-
-let usuario = get("usuarioLogado");
-
-pedidos.push({
-nome: usuario ? usuario.nome : "Anônimo",
-texto: texto,
-data: new Date().toLocaleString()
-});
-
-set("pedidos_oracao", pedidos);
-
-alert("Pedido enviado com sucesso 🙏");
-
-el("pedidoTexto").value = "";
+  db.collection("pedidos").add({
+    texto: texto,
+    data: new Date().toLocaleString()
+  })
+  .then(() => {
+    alert("Pedido salvo com sucesso 🙏");
+  })
+  .catch((error) => {
+    console.error("Erro ao salvar:", error);
+  });
 
 }
 

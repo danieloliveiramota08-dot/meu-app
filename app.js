@@ -1055,6 +1055,12 @@ el("pedidoTexto").value = "";
 function renderPedidos(){
 
   let pedidos = get("pedidos_oracao");
+
+  // 🔥 CORREÇÃO IMPORTANTE
+  if(!Array.isArray(pedidos)){
+    pedidos = [];
+  }
+
   let box = el("listaPedidos");
 
   if(!box) return;
@@ -1064,15 +1070,15 @@ function renderPedidos(){
     return;
   }
 
-  box.innerHTML = pedidos.map(p => `
-    <div style="background:#f9f9f9;padding:12px;margin-bottom:10px;border-radius:10px;position:relative;">
+  box.innerHTML = pedidos.map((p,i) => `
+    <div style="background:#f9f9f9;padding:12px;margin-bottom:10px;border-radius:10px;">
       <strong>🙏 Pedido:</strong>
       <p>${p.texto}</p>
       <small>${p.data}</small>
 
-      <button onclick="excluirPedido(${p.id})"
-        style="position:absolute;top:10px;right:10px;background:red;color:#fff;border:none;border-radius:6px;padding:5px;cursor:pointer;">
-        X
+      <button onclick="delPedido(${i})"
+        style="margin-top:5px;background:red;color:#fff;border:none;border-radius:6px;padding:5px;cursor:pointer;">
+        Excluir
       </button>
     </div>
   `).join("");

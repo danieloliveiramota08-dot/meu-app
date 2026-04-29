@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head> <link rel="manifest" href="manifest.json">
+
+<meta name="theme-color" content="#4CAF50">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Igreja Deus de Aliança</title>
+
+<style>
+
+/* ================= GERAL ================= */
+body{
+margin:0;
+font-family:Arial;
+background:#f6f1e7;
+}
+
+/* ================= PÁGINAS ================= */
+.page{
+display:none;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+height:100vh;
+padding:20px;
+}
+
+input, button, textarea, select{
+width:100%;
+max-width:320px;
+padding:10px;
+margin:6px 0;
+border-radius:8px;
+border:1px solid #d6cbb6;
+background:#fffaf3;
+}
+
+/* BOTÕES */
+button{
+background:#c8b89c;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+}
+
+/* ================= MENU ================= */
+#menuPage{
+display:none;
+flex-direction:column;
+align-items:center;
+padding:20px;
+gap:10px;
+}
+
+.menuBtn{
+width:90%;
+max-width:320px;
+padding:12px;
+font-size:16px;
+border-radius:10px;
+background:#c8b89c;
+color:white;
+border:none;
+}
+
+/* ================= CONTEÚDO ================= */
+#conteudoPage{
+display:none;
+flex-direction:column;
+padding:20px;
+}
+
+.card{
+background:#fffaf3;
+border:1px solid #e0d4be;
+padding:10px;
+margin:5px;
+border-radius:8px;
+}
+
+</style>
+
+</head>
+<body>
+
+<!-- ================= LOGIN ================= -->
+<div id="loginPage" class="page" style="display:flex;">
+
+<h1 style="color:#c8b89c;">⛪ Igreja Deus de Aliança</h1>
+
+<h2>Login</h2>
+
+<input id="loginUser" placeholder="Usuário">
+<input id="loginPass" type="password" placeholder="Senha">
+
+<button onclick="login()">Entrar</button>
+<button onclick="showRegister()">Cadastrar</button>
+
+</div>
+
+<!-- ================= CADASTRO ================= -->
+<div id="registerPage" class="page">
+
+<h2>Cadastro</h2>
+
+<input id="nome" placeholder="Nome">
+<input id="cpf" placeholder="CPF">
+<input id="nascimento" type="date">
+<input id="celular" placeholder="Celular">
+
+<input id="novoLogin" placeholder="Login">
+<input id="novaSenha" type="password" placeholder="Senha">
+
+<button onclick="cadastrar()">Salvar</button>
+<button onclick="voltarLoginTela()">Voltar</button>
+
+</div>
+
+<!-- ================= MENU ================= -->
+<div id="menuPage">
+
+<h2>⛪ Igreja Deus de Aliança</h2>
+
+<div id="adminButtons" style="display:none;">
+
+<button class="menuBtn" onclick="abrirPagina('membros')">👥 MEMBROS</button>
+<button class="menuBtn" onclick="abrirPagina('financeiro')">📊 FINANCEIRO</button>
+<button class="menuBtn" onclick="abrirPagina('estudoBiblico')">📚 ESTUDO BIBLICO</button>
+<button onclick="abrirPagina('quiz')">🧠 QUIZ BÍBLICO</button>
+<button onclick="abrirPagina('pix')">💰 OFERTAS</button>
+<button class="menuBtn" onclick="abrirPagina('pedidosRecebidos')">
+📋 PEDIDOS RECEBIDOS
+</button>
+
+</div>
+
+<button class="menuBtn" onclick="abrirPagina('cultos')">📅 CULTOS</button>
+<button class="menuBtn" onclick="abrirPagina('avisos')">📢 AVISOS</button>
+<button class="menuBtn" onclick="abrirPagina('pedidos')">🙏 PEDIDOS DE ORAÇÃO</button>
+<button onclick="abrirPagina('pix')">💰 OFERTAS</button>
+<button class="menuBtn" onclick="abrirPagina('biblia')">📖 BIBLIA</button>
+<button class="menuBtn" onclick="abrirPagina('estudoBiblico')">📚 ESTUDO BIBLICO</button>
+<button onclick="abrirPagina('quiz')">🧠 QUIZ BÍBLICO</button>
+<button class="menuBtn" onclick="abrirPagina('aniversariantes')">🎂 ANIVERSARIANTES</button>
+
+<button class="menuBtn" onclick="logout()">🚪 Sair</button>
+
+</div>
+
+<!-- ================= CONTEÚDO ================= -->
+<div id="conteudoPage">
+
+<div id="conteudoArea"></div>
+
+<button onclick="voltarMenu()">⬅ Voltar</button>
+
+</div>
+
+<!-- ================= JS ================= -->
+<script src="app.js"></script>
+
+<script>
+
+if ("serviceWorker" in navigator) {
+
+navigator.serviceWorker.register("service-worker.js");
+
+}
+
+</script>
+</body>
+</html>

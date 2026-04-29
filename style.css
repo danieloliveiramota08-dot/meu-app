@@ -1,0 +1,248 @@
+/* ================= GERAL ================= */
+
+body{
+
+margin:0;
+
+font-family:'Segoe UI',sans-serif;
+
+background:#f6f5f2;
+
+color:#444;
+
+}
+
+
+/* ================= PÁGINAS ================= */
+
+.page{
+
+display:none;
+
+flex-direction:column;
+
+align-items:center;
+
+justify-content:center;
+
+min-height:100vh;
+
+padding:20px;
+
+}
+
+
+/* ================= MENU ================= */
+
+#menuPage{
+
+display:none;
+
+flex-direction:column;
+
+align-items:center;
+
+justify-content:center;
+
+min-height:100vh;
+
+padding:20px;
+
+}
+
+
+/* ================= GRID MENU ================= */
+
+.menuGrid{
+
+display:grid;
+
+grid-template-columns:1fr 1fr;
+
+gap:20px;
+
+width:100%;
+
+max-width:900px;
+
+margin:auto;
+
+}
+
+
+/* usuário comum */
+
+.menuGrid.single{
+
+grid-template-columns:1fr;
+
+max-width:420px;
+
+}
+
+
+/* ================= COLUNAS ================= */
+
+.menuColuna{
+
+background:#ffffff;
+
+padding:18px;
+
+border-radius:14px;
+
+box-shadow:0 4px 10px rgba(0,0,0,0.05);
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+
+}
+
+
+/* ================= TÍTULOS ================= */
+
+.menuColuna h3{
+
+text-align:center;
+
+margin-bottom:10px;
+
+color:#8c7b66;
+
+}
+
+
+/* ================= BOTÕES ================= */
+
+.menuBtn{
+
+width:100%;
+
+max-width:320px;
+
+padding:14px;
+
+margin:6px 0;
+
+border-radius:10px;
+
+background:#c8b89c;
+
+color:white;
+
+font-weight:bold;
+
+border:none;
+
+cursor:pointer;
+
+transition:0.2s;
+
+}
+
+.menuBtn:hover{
+
+transform:scale(1.03);
+
+background:#b7a77e;
+
+}
+
+
+/* BOTÃO SAIR */
+
+.logoutBtn{
+
+margin-top:20px;
+
+background:#c0392b;
+
+}
+
+.logoutBtn:hover{
+
+background:#a93226;
+
+}
+
+
+/* ================= INPUTS ================= */
+
+input,
+textarea,
+select{
+
+width:100%;
+
+max-width:400px;
+
+padding:12px;
+
+margin:6px 0;
+
+border-radius:10px;
+
+border:1px solid #ddd;
+
+font-size:15px;
+
+}
+
+
+/* ================= CARDS ================= */
+
+.card{
+
+background:#ffffff;
+
+padding:16px;
+
+margin:10px auto;
+
+border-radius:12px;
+
+box-shadow:0 4px 8px rgba(0,0,0,0.05);
+
+max-width:600px;
+
+}
+
+
+/* ================= TÍTULOS ================= */
+
+h1,h2,h3{
+
+color:#6b5b4b;
+
+}
+
+
+/* ================= BOTÕES PEQUENOS ================= */
+
+.smallBtn{
+
+padding:8px 12px;
+
+margin:5px;
+
+font-size:13px;
+
+border-radius:8px;
+
+}
+
+
+/* ================= RESPONSIVO ================= */
+
+@media(max-width:700px){
+
+.menuGrid{
+
+grid-template-columns:1fr;
+
+}
+
+}

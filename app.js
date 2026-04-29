@@ -174,7 +174,8 @@ let html = "";
 /* ROTAS */
 
 if(p==="membros"){
-html = membros();
+adminMembros();
+return;
 }
 
 else if(p==="financeiro"){
@@ -241,11 +242,6 @@ el("conteudoPage").style.display="none";
 
 el("menuPage").style.display="flex";
 
-}
-
-// ================= MEMBROS =================
-function membros(){
-  carregarMembros();
 }
 
 // ================= SALVAR CADASTRO COMPLETO =================

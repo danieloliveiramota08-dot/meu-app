@@ -1,11 +1,10 @@
 {
-  "name": "Igreja App",
+  "name": "App Igreja",
   "short_name": "Igreja",
-  "start_url": "index.html",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#4CAF50",
-  "theme_color": "#4CAF50",
-  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#2e7d32",
   "icons": [
     {
       "src": "icon-192.png",

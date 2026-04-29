@@ -251,23 +251,41 @@ function membros(){
   carregarMembros();
 }
 
-// ================= SALVAR MEMBRO =================
-function salvarMembroFirebase(nome, telefone){
+// ================= SALVAR CADASTRO COMPLETO =================
+function salvarCadastroFirebase(){
+
+  let nome = el("nome").value;
+  let cpf = el("cpf").value;
+  let nascimento = el("nascimento").value;
+  let celular = el("celular").value;
+  let login = el("novoLogin").value;
+  let senha = el("novaSenha").value;
+
+  if(!nome || !cpf || !login){
+    alert("Preencha os campos obrigatórios");
+    return;
+  }
 
   db.collection("membros").add({
+
     nome: nome,
-    telefone: telefone,
-    data: new Date().toLocaleString()
+    cpf: cpf,
+    nascimento: nascimento,
+    celular: celular,
+    login: login,
+    senha: senha,
+    dataCadastro: new Date().toLocaleString()
+
   })
   .then(() => {
 
-    alert("Membro salvo com sucesso 👤");
-
-    carregarMembros(); // 🔥 atualiza lista
+    alert("Cadastro realizado com sucesso 👤");
 
   })
   .catch((error) => {
+
     console.error("Erro ao salvar:", error);
+
   });
 
 }
@@ -326,6 +344,49 @@ function carregarMembros(){
           <div style="background:#fff;padding:10px;margin-bottom:10px;border-radius:8px;">
             <strong>${m.nome}</strong><br>
             <small>${m.telefone}</small>
+          </div>
+        `;
+
+      });
+
+      container.innerHTML = html;
+
+    });
+
+}
+
+// ================= ADMIN - VER MEMBROS =================
+function adminMembros(){
+
+  const container = el("conteudoArea");
+
+  db.collection("membros")
+    .get()
+    .then((querySnapshot) => {
+
+      let html = `
+        <h2>👥 Membros Cadastrados</h2>
+      `;
+
+      querySnapshot.forEach((doc) => {
+
+        let m = doc.data();
+
+        html += `
+          <div style="
+            background:#fff;
+            padding:12px;
+            margin-bottom:10px;
+            border-radius:10px;
+            box-shadow:0 2px 6px rgba(0,0,0,0.1);
+          ">
+
+            <strong>Nome:</strong> ${m.nome || "-"}<br>
+            <strong>CPF:</strong> ${m.cpf || "-"}<br>
+            <strong>Nascimento:</strong> ${m.nascimento || "-"}<br>
+            <strong>Celular:</strong> ${m.celular || "-"}<br>
+            <strong>Login:</strong> ${m.login || "-"}
+
           </div>
         `;
 

@@ -1,5 +1,5 @@
 {
-  "name": "App Igreja",
+  "name": "Meu App Igreja",
   "short_name": "Igreja",
   "start_url": "./index.html",
   "display": "standalone",

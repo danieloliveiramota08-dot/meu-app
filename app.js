@@ -315,6 +315,24 @@ function salvarMembroFirebase(nome, telefone){
 
 }
 
+// ================= ADD MEMBRO =================
+function addMembro(){
+
+  let nome = el("nomeMembro").value;
+  let telefone = el("telefoneMembro").value;
+
+  if(!nome){
+    alert("Digite o nome 👤");
+    return;
+  }
+
+  salvarMembroFirebase(nome, telefone);
+
+  el("nomeMembro").value = "";
+  el("telefoneMembro").value = "";
+
+}
+
 // ================= EDITAR =================
 function editarM(i){
 
@@ -1049,6 +1067,22 @@ function salvarPedidoFirebase(texto){
   .catch((error) => {
     console.error("Erro ao salvar:", error);
   });
+
+}
+
+// ================= BOTÃO SALVAR PEDIDO =================
+function salvarPedido(){
+
+  let texto = el("pedidoTexto").value;
+
+  if(!texto){
+    alert("Digite um pedido 🙏");
+    return;
+  }
+
+  salvarPedidoFirebase(texto);
+
+  el("pedidoTexto").value = "";
 
 }
 

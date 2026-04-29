@@ -305,10 +305,12 @@ function addMembro(){
 
 }
 
-// ================= MOSTRAR MEMBROS (ADMIN) =================
+// ================= ADMIN VER MEMBROS =================
 function adminMembros(){
 
   const container = el("conteudoArea");
+
+  container.innerHTML = "<h2>Carregando membros...</h2>";
 
   db.collection("membros")
     .get()
@@ -317,6 +319,12 @@ function adminMembros(){
       let html = `
         <h2>👥 Membros cadastrados</h2>
       `;
+
+      if(querySnapshot.empty){
+
+        html += "<p>Nenhum membro encontrado.</p>";
+
+      }
 
       querySnapshot.forEach((doc) => {
 
@@ -328,17 +336,12 @@ function adminMembros(){
             padding:12px;
             margin-bottom:10px;
             border-radius:10px;
-            box-shadow:0 2px 6px rgba(0,0,0,0.1);
           ">
 
             <strong>👤 Nome:</strong> ${m.nome || "-"} <br>
-
             <strong>🪪 CPF:</strong> ${m.cpf || "-"} <br>
-
             <strong>🎂 Nascimento:</strong> ${m.nascimento || "-"} <br>
-
             <strong>📱 Celular:</strong> ${m.celular || "-"} <br>
-
             <strong>🔑 Login:</strong> ${m.login || "-"} <br>
 
           </div>
@@ -352,6 +355,10 @@ function adminMembros(){
     .catch((error) => {
 
       console.error("Erro ao carregar membros:", error);
+
+      container.innerHTML = `
+        <h2>Erro ao carregar membros ❌</h2>
+      `;
 
     });
 

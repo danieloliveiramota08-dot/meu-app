@@ -1031,7 +1031,27 @@ abrirPagina("cultos");
 
 // ================= PEDIDOS DE ORAÇÃO =================
 function pedidosOracao(){
-  carregarPedidos();
+
+  const container = el("conteudoArea");
+
+  container.innerHTML = `
+    <h2>🙏 Pedidos de Oração</h2>
+
+    <div style="background:#fff;padding:15px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);margin-bottom:15px;">
+      <h3>Enviar pedido</h3>
+
+      <textarea id="pedidoTexto"
+        placeholder="Escreva seu pedido de oração..."
+        style="width:100%;height:100px;padding:10px;border-radius:8px;border:1px solid #ccc;">
+      </textarea>
+
+      <button onclick="salvarPedido()"
+        style="margin-top:10px;padding:10px 15px;background:#4CAF50;color:#fff;border:none;border-radius:8px;cursor:pointer;">
+        Enviar 🙏
+      </button>
+    </div>
+  `;
+
 }
 
 // ================= SALVAR PEDIDO =================
@@ -1112,58 +1132,8 @@ function excluirPedido(id){
 }
 
 // ================= PEDIDOS RECEBIDOS =================
-function pedidosRecebidos(){
-
-if(!isAdmin()){
-el("conteudoArea").innerHTML =
-"<h2>Acesso negado</h2>";
-return;
-}
-
-let p = get("pedidos_oracao");
-
-if(!Array.isArray(p)){
-p = [];
-}
-
-let html = `
-<h2>📋 Pedidos Recebidos</h2>
-`;
-
-if(p.length === 0){
-
-html += `
-<div class="card">
-Nenhum pedido recebido ainda 🙏
-</div>
-`;
-
-}
-
-p.forEach((x,i)=>{
-
-html += `
-<div class="card">
-
-<h3>👤 ${x.nome || "Anônimo"}</h3>
-
-<p>🙏 ${x.texto}</p>
-
-<small>📅 ${x.data || ""}</small>
-
-<br><br>
-
-<button onclick="delPedido(${i})">
-🗑️ Excluir
-</button>
-
-</div>
-`;
-
-});
-
-el("conteudoArea").innerHTML = html;
-
+function pedidosOracao(){
+  carregarPedidos();
 }
 
 // ================= MOSTRAR PEDIDOS =================

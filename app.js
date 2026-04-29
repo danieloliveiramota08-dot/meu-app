@@ -1297,7 +1297,7 @@ function biblia(){
       </div>
 
       <iframe 
-        src="http://bibliaonline.com.br/acf"
+        src="https://bibliaonline.com.br/acf"
         style="width:100%;height:80vh;border:none;">
       </iframe>
 

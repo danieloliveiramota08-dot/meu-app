@@ -110,29 +110,19 @@ alert("Preencha Nome, Login e Senha");
 return;
 }
 
-let m = get("membros");
+// 🔥 SALVA NO FIREBASE
+db.collection("membros").add({
 
-if(!Array.isArray(m)){
-m = [];
-}
+nome: nome,
+cpf: cpf,
+nascimento: nascimento,
+celular: celular,
+login: login,
+senha: senha,
+dataCadastro: new Date().toLocaleString()
 
-// verifica login duplicado
-if(m.find(x => x.login === login)){
-alert("Login já existe!");
-return;
-}
-
-// salva membro
-m.push({
-nome,
-cpf,
-nascimento,
-celular,
-login,
-senha
-});
-
-set("membros", m);
+})
+.then(() => {
 
 alert("Cadastro realizado com sucesso! ✅");
 
@@ -144,8 +134,15 @@ el("celular").value = "";
 el("novoLogin").value = "";
 el("novaSenha").value = "";
 
-// 🔥 VOLTA PARA LOGIN
+// volta login
 voltarLoginTela();
+
+})
+.catch((error) => {
+
+console.error("Erro ao salvar:", error);
+
+});
 
 }
 
@@ -1239,61 +1236,6 @@ function excluirPedido(id){
   set("pedidos_oracao", pedidos);
 
   renderPedidos();
-}
-
-// ================= PEDIDOS RECEBIDOS =================
-function pedidosRecebidos(){
-
-if(!isAdmin()){
-el("conteudoArea").innerHTML =
-"<h2>Acesso negado</h2>";
-return;
-}
-
-let p = get("pedidos_oracao");
-
-if(!Array.isArray(p)){
-p = [];
-}
-
-let html = `
-<h2>📋 Pedidos Recebidos</h2>
-`;
-
-if(p.length === 0){
-
-html += `
-<div class="card">
-Nenhum pedido recebido ainda 🙏
-</div>
-`;
-
-}
-
-p.forEach((x,i)=>{
-
-html += `
-<div class="card">
-
-<h3>👤 ${x.nome || "Anônimo"}</h3>
-
-<p>🙏 ${x.texto}</p>
-
-<small>📅 ${x.data || ""}</small>
-
-<br><br>
-
-<button onclick="delPedido(${i})">
-🗑️ Excluir
-</button>
-
-</div>
-`;
-
-});
-
-el("conteudoArea").innerHTML = html;
-
 }
 
 // ================= PEDIDOS RECEBIDOS (ADMIN) =================

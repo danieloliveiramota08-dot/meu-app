@@ -278,7 +278,7 @@ function addMembro(){
 
 }
 
-// ================= ADMIN VER MEMBROS =================
+// ================= MOSTRAR MEMBROS =================
 // ================= MOSTRAR MEMBROS =================
 function carregarMembros(){
 
@@ -292,6 +292,14 @@ function carregarMembros(){
         <h2>👥 Membros cadastrados</h2>
       `;
 
+      if(querySnapshot.empty){
+
+        html += `
+          <p>Nenhum membro cadastrado ainda.</p>
+        `;
+
+      }
+
       querySnapshot.forEach((doc) => {
 
         let m = doc.data();
@@ -303,11 +311,13 @@ function carregarMembros(){
             margin-bottom:10px;
             border-radius:8px;
           ">
-            <strong>${m.nome}</strong><br>
-            CPF: ${m.cpf || ""}<br>
-            Nascimento: ${m.nascimento || ""}<br>
-            Celular: ${m.celular || ""}<br>
-            Login: ${m.login || ""}
+
+            <strong>${m.nome || "Sem nome"}</strong><br>
+
+            CPF: ${m.cpf || "Não informado"}<br>
+            Nascimento: ${m.nascimento || "Não informado"}<br>
+            Celular: ${m.celular || "Não informado"}<br>
+            Login: ${m.login || "Não informado"}
 
             <br><br>
 
@@ -329,6 +339,15 @@ function carregarMembros(){
       });
 
       container.innerHTML = html;
+
+    })
+    .catch((error) => {
+
+      console.error("Erro ao carregar membros:", error);
+
+      container.innerHTML = `
+        <p>Erro ao carregar membros ⚠</p>
+      `;
 
     });
 

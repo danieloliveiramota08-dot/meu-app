@@ -260,7 +260,11 @@ function salvarMembroFirebase(nome, telefone){
     data: new Date().toLocaleString()
   })
   .then(() => {
+
     alert("Membro salvo com sucesso 👤");
+
+    carregarMembros(); // 🔥 atualiza lista
+
   })
   .catch((error) => {
     console.error("Erro ao salvar:", error);
@@ -306,12 +310,44 @@ function carregarMembros(){
           placeholder="Telefone"
           style="width:100%;padding:10px;margin-bottom:10px;border-radius:8px;border:1px solid #ccc;">
 
-        <button onclick="salvarMembro()"
+        <button onclick="addMembro()"
           style="padding:10px 15px;background:#2196F3;color:#fff;border:none;border-radius:8px;">
           Salvar 👤
         </button>
 
         <h3 style="margin-top:20px;">Lista de membros</h3>
+      `;
+
+      querySnapshot.forEach((doc) => {
+
+        let m = doc.data();
+
+        html += `
+          <div style="background:#fff;padding:10px;margin-bottom:10px;border-radius:8px;">
+            <strong>${m.nome}</strong><br>
+            <small>${m.telefone}</small>
+          </div>
+        `;
+
+      });
+
+      container.innerHTML = html;
+
+    });
+
+}
+
+// ================= LISTAR MEMBROS =================
+function listarMembros(){
+
+  const container = el("conteudoArea");
+
+  db.collection("membros")
+    .get()
+    .then((querySnapshot) => {
+
+      let html = `
+        <h2>👥 Membros</h2>
       `;
 
       querySnapshot.forEach((doc) => {
@@ -1040,6 +1076,10 @@ function pedidosOracao(){
     <div style="background:#fff;padding:15px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);margin-bottom:15px;">
       <h3>Enviar pedido</h3>
 
+      <input id="nomePedido"
+  placeholder="Seu nome"
+  style="width:100%;padding:10px;margin-bottom:10px;border-radius:8px;border:1px solid #ccc;">
+
       <textarea id="pedidoTexto"
         placeholder="Escreva seu pedido de oração..."
         style="width:100%;height:100px;padding:10px;border-radius:8px;border:1px solid #ccc;">
@@ -1057,12 +1097,21 @@ function pedidosOracao(){
 // ================= SALVAR PEDIDO =================
 function salvarPedidoFirebase(texto){
 
+  let nome = el("nomePedido") 
+      ? el("nomePedido").value 
+      : "Anônimo";
+
   db.collection("pedidos").add({
+    nome: nome,
     texto: texto,
     data: new Date().toLocaleString()
   })
   .then(() => {
+
     alert("Pedido salvo com sucesso 🙏");
+
+    carregarPedidos(); // 🔥 atualiza lista
+
   })
   .catch((error) => {
     console.error("Erro ao salvar:", error);
@@ -1132,8 +1181,92 @@ function excluirPedido(id){
 }
 
 // ================= PEDIDOS RECEBIDOS =================
-function pedidosOracao(){
-  carregarPedidos();
+function pedidosRecebidos(){
+
+if(!isAdmin()){
+el("conteudoArea").innerHTML =
+"<h2>Acesso negado</h2>";
+return;
+}
+
+let p = get("pedidos_oracao");
+
+if(!Array.isArray(p)){
+p = [];
+}
+
+let html = `
+<h2>📋 Pedidos Recebidos</h2>
+`;
+
+if(p.length === 0){
+
+html += `
+<div class="card">
+Nenhum pedido recebido ainda 🙏
+</div>
+`;
+
+}
+
+p.forEach((x,i)=>{
+
+html += `
+<div class="card">
+
+<h3>👤 ${x.nome || "Anônimo"}</h3>
+
+<p>🙏 ${x.texto}</p>
+
+<small>📅 ${x.data || ""}</small>
+
+<br><br>
+
+<button onclick="delPedido(${i})">
+🗑️ Excluir
+</button>
+
+</div>
+`;
+
+});
+
+el("conteudoArea").innerHTML = html;
+
+}
+
+// ================= PEDIDOS RECEBIDOS (ADMIN) =================
+function pedidosRecebidos(){
+
+  const container = el("conteudoArea");
+
+  db.collection("pedidos")
+    .orderBy("data", "desc")
+    .get()
+    .then((querySnapshot) => {
+
+      let html = `
+        <h2>📩 Pedidos Recebidos</h2>
+      `;
+
+      querySnapshot.forEach((doc) => {
+
+        let p = doc.data();
+
+        html += `
+          <div style="background:#fff;padding:10px;margin-bottom:10px;border-radius:8px;">
+            <strong>${p.nome}</strong>
+            <p>${p.texto}</p>
+            <small>${p.data}</small>
+          </div>
+        `;
+
+      });
+
+      container.innerHTML = html;
+
+    });
+
 }
 
 // ================= MOSTRAR PEDIDOS =================

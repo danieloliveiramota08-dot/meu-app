@@ -260,6 +260,11 @@ el("menuPage").style.display="flex";
 
 }
 
+// ================= ABRIR MEMBROS =================
+function membros(){
+  carregarMembros();
+}
+
 // ================= ADD MEMBRO =================
 function addMembro(){
 
@@ -278,7 +283,6 @@ function addMembro(){
 
 }
 
-// ================= MOSTRAR MEMBROS =================
 // ================= MOSTRAR MEMBROS =================
 function carregarMembros(){
 

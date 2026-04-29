@@ -305,54 +305,7 @@ function addMembro(){
 
 }
 
-// ================= MOSTRAR MEMBROS =================
-function carregarMembros(){
-
-  const container = el("conteudoArea");
-
-  db.collection("membros")
-    .get()
-    .then((querySnapshot) => {
-
-      let html = `
-        <h2>👥 Membros</h2>
-
-        <input id="nomeMembro"
-          placeholder="Nome"
-          style="width:100%;padding:10px;margin-bottom:10px;border-radius:8px;border:1px solid #ccc;">
-
-        <input id="telefoneMembro"
-          placeholder="Telefone"
-          style="width:100%;padding:10px;margin-bottom:10px;border-radius:8px;border:1px solid #ccc;">
-
-        <button onclick="addMembro()"
-          style="padding:10px 15px;background:#2196F3;color:#fff;border:none;border-radius:8px;">
-          Salvar 👤
-        </button>
-
-        <h3 style="margin-top:20px;">Lista de membros</h3>
-      `;
-
-      querySnapshot.forEach((doc) => {
-
-        let m = doc.data();
-
-        html += `
-          <div style="background:#fff;padding:10px;margin-bottom:10px;border-radius:8px;">
-            <strong>${m.nome}</strong><br>
-            <small>${m.telefone}</small>
-          </div>
-        `;
-
-      });
-
-      container.innerHTML = html;
-
-    });
-
-}
-
-// ================= ADMIN - VER MEMBROS =================
+// ================= MOSTRAR MEMBROS (ADMIN) =================
 function adminMembros(){
 
   const container = el("conteudoArea");
@@ -362,7 +315,7 @@ function adminMembros(){
     .then((querySnapshot) => {
 
       let html = `
-        <h2>👥 Membros Cadastrados</h2>
+        <h2>👥 Membros cadastrados</h2>
       `;
 
       querySnapshot.forEach((doc) => {
@@ -378,11 +331,15 @@ function adminMembros(){
             box-shadow:0 2px 6px rgba(0,0,0,0.1);
           ">
 
-            <strong>Nome:</strong> ${m.nome || "-"}<br>
-            <strong>CPF:</strong> ${m.cpf || "-"}<br>
-            <strong>Nascimento:</strong> ${m.nascimento || "-"}<br>
-            <strong>Celular:</strong> ${m.celular || "-"}<br>
-            <strong>Login:</strong> ${m.login || "-"}
+            <strong>👤 Nome:</strong> ${m.nome || "-"} <br>
+
+            <strong>🪪 CPF:</strong> ${m.cpf || "-"} <br>
+
+            <strong>🎂 Nascimento:</strong> ${m.nascimento || "-"} <br>
+
+            <strong>📱 Celular:</strong> ${m.celular || "-"} <br>
+
+            <strong>🔑 Login:</strong> ${m.login || "-"} <br>
 
           </div>
         `;
@@ -390,6 +347,11 @@ function adminMembros(){
       });
 
       container.innerHTML = html;
+
+    })
+    .catch((error) => {
+
+      console.error("Erro ao carregar membros:", error);
 
     });
 

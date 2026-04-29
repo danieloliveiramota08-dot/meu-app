@@ -279,11 +279,10 @@ function addMembro(){
 }
 
 // ================= ADMIN VER MEMBROS =================
-function adminMembros(){
+// ================= MOSTRAR MEMBROS =================
+function carregarMembros(){
 
   const container = el("conteudoArea");
-
-  container.innerHTML = "<h2>Carregando membros...</h2>";
 
   db.collection("membros")
     .get()
@@ -293,12 +292,6 @@ function adminMembros(){
         <h2>👥 Membros cadastrados</h2>
       `;
 
-      if(querySnapshot.empty){
-
-        html += "<p>Nenhum membro encontrado.</p>";
-
-      }
-
       querySnapshot.forEach((doc) => {
 
         let m = doc.data();
@@ -306,16 +299,29 @@ function adminMembros(){
         html += `
           <div style="
             background:#fff;
-            padding:12px;
+            padding:10px;
             margin-bottom:10px;
-            border-radius:10px;
+            border-radius:8px;
           ">
+            <strong>${m.nome}</strong><br>
+            CPF: ${m.cpf || ""}<br>
+            Nascimento: ${m.nascimento || ""}<br>
+            Celular: ${m.celular || ""}<br>
+            Login: ${m.login || ""}
 
-            <strong>👤 Nome:</strong> ${m.nome || "-"} <br>
-            <strong>🪪 CPF:</strong> ${m.cpf || "-"} <br>
-            <strong>🎂 Nascimento:</strong> ${m.nascimento || "-"} <br>
-            <strong>📱 Celular:</strong> ${m.celular || "-"} <br>
-            <strong>🔑 Login:</strong> ${m.login || "-"} <br>
+            <br><br>
+
+            <button onclick="excluirMembro('${doc.id}')"
+              style="
+                background:#e53935;
+                color:#fff;
+                border:none;
+                padding:6px 10px;
+                border-radius:6px;
+                cursor:pointer;
+              ">
+              🗑 Excluir
+            </button>
 
           </div>
         `;
@@ -323,15 +329,6 @@ function adminMembros(){
       });
 
       container.innerHTML = html;
-
-    })
-    .catch((error) => {
-
-      console.error("Erro ao carregar membros:", error);
-
-      container.innerHTML = `
-        <h2>Erro ao carregar membros ❌</h2>
-      `;
 
     });
 
@@ -390,21 +387,29 @@ localStorage.setItem("editMembroIndex", String(i));
 alert("Modo edição ativado ✏");
 }
 
-// ================= EXCLUIR =================
-function delM(i){
+// ================= EXCLUIR MEMBRO =================
+function excluirMembro(id){
 
-let m = get("membros");
-if(!Array.isArray(m)) return;
+  if(confirm("Deseja excluir este membro?")){
 
-// remove item
-m.splice(i,1);
-set("membros",m);
+    db.collection("membros")
+      .doc(id)
+      .delete()
+      .then(() => {
 
-// se estava editando, cancela
-localStorage.removeItem("editMembroIndex");
+        alert("Membro excluído 👤");
 
-// recarrega lista
-el("conteudoArea").innerHTML = membros();
+        carregarMembros();
+
+      })
+      .catch((error) => {
+
+        console.error("Erro ao excluir:", error);
+
+      });
+
+  }
+
 }
 
 // ================= BUSCA =================
@@ -1185,18 +1190,17 @@ function excluirPedido(id){
   renderPedidos();
 }
 
-// ================= PEDIDOS RECEBIDOS (ADMIN) =================
+// ================= PEDIDOS RECEBIDOS =================
 function pedidosRecebidos(){
 
   const container = el("conteudoArea");
 
   db.collection("pedidos")
-    .orderBy("data", "desc")
     .get()
     .then((querySnapshot) => {
 
       let html = `
-        <h2>📩 Pedidos Recebidos</h2>
+        <h2>📋 Pedidos recebidos</h2>
       `;
 
       querySnapshot.forEach((doc) => {
@@ -1204,10 +1208,31 @@ function pedidosRecebidos(){
         let p = doc.data();
 
         html += `
-          <div style="background:#fff;padding:10px;margin-bottom:10px;border-radius:8px;">
-            <strong>${p.nome}</strong>
-            <p>${p.texto}</p>
-            <small>${p.data}</small>
+          <div style="
+            background:#fff;
+            padding:10px;
+            margin-bottom:10px;
+            border-radius:8px;
+          ">
+
+            <strong>${p.nome || "Sem nome"}</strong><br>
+
+            ${p.texto}
+
+            <br><br>
+
+            <button onclick="excluirPedido('${doc.id}')"
+              style="
+                background:#e53935;
+                color:#fff;
+                border:none;
+                padding:6px 10px;
+                border-radius:6px;
+                cursor:pointer;
+              ">
+              🗑 Excluir
+            </button>
+
           </div>
         `;
 
@@ -1269,19 +1294,27 @@ function carregarPedidos(){
 }
 
 // ================= EXCLUIR PEDIDO =================
-function delPedido(i){
+function excluirPedido(id){
 
-let p = get("pedidos_oracao");
+  if(confirm("Deseja excluir este pedido?")){
 
-if(!Array.isArray(p)){
-return;
-}
+    db.collection("pedidos")
+      .doc(id)
+      .delete()
+      .then(() => {
 
-p.splice(i,1);
+        alert("Pedido excluído 🙏");
 
-set("pedidos_oracao", p);
+        pedidosRecebidos();
 
-pedidosRecebidos();
+      })
+      .catch((error) => {
+
+        console.error("Erro ao excluir:", error);
+
+      });
+
+  }
 
 }
 

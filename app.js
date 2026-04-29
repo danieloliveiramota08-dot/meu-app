@@ -35,12 +35,6 @@ function login(){
 let u = el("loginUser").value.trim();
 let p = el("loginPass").value.trim();
 
-let membros = get("membros");
-
-if(!Array.isArray(membros)){
-membros = [];
-}
-
 // ================= ADMIN =================
 if(u === "admin" && p === "1234"){
 
@@ -52,28 +46,50 @@ admin: true
 
 set("usuarioLogado", adminUser);
 
-}else{
+el("loginPage").style.display="none";
+el("menuPage").style.display="flex";
 
-let ok = membros.find(m => m.login === u && m.senha === p);
+ajustarMenu();
 
-if(!ok){
+return;
+
+}
+
+// ================= USUÁRIO NORMAL =================
+db.collection("membros")
+.where("login","==",u)
+.where("senha","==",p)
+.get()
+.then((querySnapshot)=>{
+
+if(querySnapshot.empty){
 alert("Login inválido");
 return;
 }
 
-ok.admin = false;
+querySnapshot.forEach((doc)=>{
 
-set("usuarioLogado", ok);
+let user = doc.data();
 
-}
+user.admin = false;
+
+set("usuarioLogado", user);
+
+});
 
 el("loginPage").style.display="none";
 el("menuPage").style.display="flex";
 
 ajustarMenu();
 
-}
+})
+.catch((error)=>{
 
+console.error("Erro no login:", error);
+
+});
+
+}
 
 // ================= ADMIN CHECK =================
 function isAdmin(){
@@ -119,7 +135,7 @@ nascimento: nascimento,
 celular: celular,
 login: login,
 senha: senha,
-dataCadastro: new Date().toLocaleString()
+dataCadastro: firebase.firestore.FieldValue.serverTimestamp()
 
 })
 .then(() => {
@@ -241,45 +257,6 @@ function voltarMenu(){
 el("conteudoPage").style.display="none";
 
 el("menuPage").style.display="flex";
-
-}
-
-// ================= SALVAR CADASTRO COMPLETO =================
-function salvarCadastroFirebase(){
-
-  let nome = el("nome").value;
-  let cpf = el("cpf").value;
-  let nascimento = el("nascimento").value;
-  let celular = el("celular").value;
-  let login = el("novoLogin").value;
-  let senha = el("novaSenha").value;
-
-  if(!nome || !cpf || !login){
-    alert("Preencha os campos obrigatórios");
-    return;
-  }
-
-  db.collection("membros").add({
-
-    nome: nome,
-    cpf: cpf,
-    nascimento: nascimento,
-    celular: celular,
-    login: login,
-    senha: senha,
-    dataCadastro: new Date().toLocaleString()
-
-  })
-  .then(() => {
-
-    alert("Cadastro realizado com sucesso 👤");
-
-  })
-  .catch((error) => {
-
-    console.error("Erro ao salvar:", error);
-
-  });
 
 }
 
@@ -1120,25 +1097,30 @@ function pedidosOracao(){
 // ================= SALVAR PEDIDO =================
 function salvarPedidoFirebase(texto){
 
-  let nome = el("nomePedido") 
-      ? el("nomePedido").value 
-      : "Anônimo";
+let nome = el("nomePedido") 
+? el("nomePedido").value 
+: "Anônimo";
 
-  db.collection("pedidos").add({
-    nome: nome,
-    texto: texto,
-    data: new Date().toLocaleString()
-  })
-  .then(() => {
+db.collection("pedidos").add({
 
-    alert("Pedido salvo com sucesso 🙏");
+nome: nome,
+texto: texto,
+data: new Date().toLocaleString()
 
-    carregarPedidos(); // 🔥 atualiza lista
+})
+.then(() => {
 
-  })
-  .catch((error) => {
-    console.error("Erro ao salvar:", error);
-  });
+alert("Pedido enviado com sucesso 🙏");
+
+// 🔥 NÃO mostra lista
+pedidosOracao();
+
+})
+.catch((error) => {
+
+console.error("Erro ao salvar:", error);
+
+});
 
 }
 

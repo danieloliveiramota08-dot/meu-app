@@ -248,54 +248,7 @@ el("menuPage").style.display="flex";
 
 // ================= MEMBROS =================
 function membros(){
-
-if(!isAdmin()){
-return "<h2>Acesso negado</h2>";
-}
-
-let m = get("membros");
-if(!Array.isArray(m)) m = [];
-
-let html = `
-<h2>👥 Membros da Igreja</h2>
-
-<input id="buscaMembro" placeholder="🔎 Buscar por nome..." oninput="filtrarMembros()">
-
-<div class="card">
-<h3>➕ Adicionar / Editar Membro</h3>
-
-<input id="nome" placeholder="Nome">
-<input id="cpf" placeholder="CPF">
-<input id="nascimento" type="date">
-<input id="celular" placeholder="Celular">
-<input id="novoLogin" placeholder="Login">
-<input id="novaSenha" type="password" placeholder="Senha">
-
-<button onclick="salvarMembro()">💾 Salvar</button>
-</div>
-
-<div id="listaMembros">
-`;
-
-m.forEach((x,i)=>{
-html += `
-<div class="card membro-item">
-<h3>👤 ${x.nome}</h3>
-
-<p><b>CPF:</b> ${x.cpf}</p>
-<p><b>Nascimento:</b> ${x.nascimento}</p>
-<p><b>Celular:</b> ${x.celular}</p>
-<p><b>Login:</b> ${x.login}</p>
-
-<button onclick="editarM(${i})">✏ Editar</button>
-<button onclick="delM(${i})">🗑 Excluir</button>
-</div>
-`;
-});
-
-html += `</div>`;
-
-return html;
+  carregarMembros();
 }
 
 // ================= SALVAR MEMBRO =================
@@ -330,6 +283,53 @@ function addMembro(){
 
   el("nomeMembro").value = "";
   el("telefoneMembro").value = "";
+
+}
+
+// ================= MOSTRAR MEMBROS =================
+function carregarMembros(){
+
+  const container = el("conteudoArea");
+
+  db.collection("membros")
+    .get()
+    .then((querySnapshot) => {
+
+      let html = `
+        <h2>👥 Membros</h2>
+
+        <input id="nomeMembro"
+          placeholder="Nome"
+          style="width:100%;padding:10px;margin-bottom:10px;border-radius:8px;border:1px solid #ccc;">
+
+        <input id="telefoneMembro"
+          placeholder="Telefone"
+          style="width:100%;padding:10px;margin-bottom:10px;border-radius:8px;border:1px solid #ccc;">
+
+        <button onclick="salvarMembro()"
+          style="padding:10px 15px;background:#2196F3;color:#fff;border:none;border-radius:8px;">
+          Salvar 👤
+        </button>
+
+        <h3 style="margin-top:20px;">Lista de membros</h3>
+      `;
+
+      querySnapshot.forEach((doc) => {
+
+        let m = doc.data();
+
+        html += `
+          <div style="background:#fff;padding:10px;margin-bottom:10px;border-radius:8px;">
+            <strong>${m.nome}</strong><br>
+            <small>${m.telefone}</small>
+          </div>
+        `;
+
+      });
+
+      container.innerHTML = html;
+
+    });
 
 }
 
@@ -1031,27 +1031,7 @@ abrirPagina("cultos");
 
 // ================= PEDIDOS DE ORAÇÃO =================
 function pedidosOracao(){
-
-  const container = el("conteudoArea");
-
-  container.innerHTML = `
-    <h2>🙏 Pedidos de Oração</h2>
-
-    <div style="background:#fff;padding:15px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);margin-bottom:15px;">
-      <h3>Enviar pedido</h3>
-
-      <textarea id="pedidoTexto"
-        placeholder="Escreva seu pedido de oração..."
-        style="width:100%;height:100px;padding:10px;border-radius:8px;border:1px solid #ccc;">
-      </textarea>
-
-      <button onclick="salvarPedido()"
-        style="margin-top:10px;padding:10px 15px;background:#4CAF50;color:#fff;border:none;border-radius:8px;cursor:pointer;">
-        Enviar 🙏
-      </button>
-    </div>
-  `;
-
+  carregarPedidos();
 }
 
 // ================= SALVAR PEDIDO =================
@@ -1183,6 +1163,55 @@ html += `
 });
 
 el("conteudoArea").innerHTML = html;
+
+}
+
+// ================= MOSTRAR PEDIDOS =================
+function carregarPedidos(){
+
+  const container = el("conteudoArea");
+
+  db.collection("pedidos")
+    .orderBy("data", "desc")
+    .get()
+    .then((querySnapshot) => {
+
+      let html = `
+        <h2>🙏 Pedidos de Oração</h2>
+
+        <div style="background:#fff;padding:15px;border-radius:12px;margin-bottom:15px;">
+          <h3>Enviar pedido</h3>
+
+          <textarea id="pedidoTexto"
+            placeholder="Escreva seu pedido de oração..."
+            style="width:100%;height:100px;padding:10px;border-radius:8px;border:1px solid #ccc;">
+          </textarea>
+
+          <button onclick="salvarPedido()"
+            style="margin-top:10px;padding:10px 15px;background:#4CAF50;color:#fff;border:none;border-radius:8px;">
+            Enviar 🙏
+          </button>
+        </div>
+
+        <h3>Pedidos enviados</h3>
+      `;
+
+      querySnapshot.forEach((doc) => {
+
+        let p = doc.data();
+
+        html += `
+          <div style="background:#fff;padding:10px;margin-bottom:10px;border-radius:8px;">
+            <p>${p.texto}</p>
+            <small>${p.data}</small>
+          </div>
+        `;
+
+      });
+
+      container.innerHTML = html;
+
+    });
 
 }
 

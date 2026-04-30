@@ -830,183 +830,87 @@ abrirPagina("avisos");
 }
 
 // ================= CULTOS =================
-
 function cultos(){
 
-let lista =
-JSON.parse(localStorage.getItem("cultos")) || [];
+const container = el("conteudoArea");
 
-let html = `
+db.collection("cultos")
+.get()
+.then((querySnapshot)=>{
 
-<h2>📅 Cultos</h2>
+let html = `<h2>📅 Cultos</h2>`;
 
-<div class="cultosContainer">
-
-`;
-
-
-/* ADMIN — FORMULÁRIO */
-
+// ADMIN
 if(isAdmin()){
-
 html += `
-
-<div class="addCultoBox">
-
-<h3>➕ Adicionar Culto</h3>
-
-<input id="tituloCulto"
-placeholder="Nome do culto">
-
-<input id="diaCulto"
-placeholder="Dia (ex: Quinta-feira)">
-
-<input id="horaCulto"
-placeholder="Hora (ex: 20:00)">
-
-<button onclick="addCulto()"
-class="menuBtn">
-💾 Salvar Culto
-</button>
-
+<div class="card">
+<input id="tituloCulto" placeholder="Nome">
+<input id="diaCulto" placeholder="Dia">
+<input id="horaCulto" placeholder="Hora">
+<button onclick="addCulto()">Salvar</button>
 </div>
-
 `;
-
 }
 
-
-/* SEM CULTOS */
-
-if(lista.length === 0){
-
-html += `
-
-<div class="cultoCard">
-
-📭 Nenhum culto cadastrado.
-
-</div>
-
-`;
-
+if(querySnapshot.empty){
+html += `<p>Nenhum culto cadastrado</p>`;
 }
 
+querySnapshot.forEach((doc)=>{
 
-/* LISTA */
-
-lista.forEach((c,i)=>{
-
-html += `
-
-<div class="cultoCard">
-
-<div class="cultoTitulo">
-📖 ${c.titulo}
-</div>
-
-<div class="cultoInfo">
-📅 ${c.dia}
-</div>
-
-<div class="cultoHorario">
-⏰ ${c.hora}
-</div>
-
-`;
-
-
-/* BOTÃO EXCLUIR ADMIN */
-
-if(isAdmin()){
+let c = doc.data();
 
 html += `
+<div class="card">
+<h3>${c.titulo}</h3>
+<p>📅 ${c.dia}</p>
+<p>⏰ ${c.hora}</p>
 
-<button onclick="delCulto(${i})"
-class="menuBtn"
-style="margin-top:10px;">
-🗑️ Excluir
-</button>
+${isAdmin() ? `
+<button onclick="excluirCulto('${doc.id}')">🗑 Excluir</button>
+` : ""}
 
+</div>
 `;
-
-}
-
-html += `</div>`;
 
 });
 
-html += `</div>`;
+container.innerHTML = html;
 
-return html;
+});
 
 }
-
-
 
 // ================= ADD CULTOS =================
-
 function addCulto(){
 
-let titulo =
-document.getElementById("tituloCulto").value.trim();
-
-let dia =
-document.getElementById("diaCulto").value.trim();
-
-let hora =
-document.getElementById("horaCulto").value.trim();
-
+let titulo = el("tituloCulto").value;
+let dia = el("diaCulto").value;
+let hora = el("horaCulto").value;
 
 if(!titulo || !dia || !hora){
-
-alert("Preencha todos os campos");
-
+alert("Preencha tudo");
 return;
-
 }
 
-
-let lista =
-JSON.parse(localStorage.getItem("cultos")) || [];
-
-
-lista.push({
+db.collection("cultos").add({
 titulo,
 dia,
 hora
-});
-
-
-localStorage.setItem(
-"cultos",
-JSON.stringify(lista)
-);
-
-
-/* Recarrega página */
-
-abrirPagina("cultos");
+})
+.then(()=>abrirPagina("cultos"));
 
 }
 
-
-
 // ================= EXCLUIR =================
+function excluirCulto(id){
 
-function delCulto(i){
+if(confirm("Excluir culto?")){
 
-let lista =
-JSON.parse(localStorage.getItem("cultos")) || [];
+db.collection("cultos").doc(id).delete()
+.then(()=>abrirPagina("cultos"));
 
-lista.splice(i,1);
-
-localStorage.setItem(
-"cultos",
-JSON.stringify(lista)
-);
-
-abrirPagina("cultos");
+}
 
 }
 
@@ -1404,10 +1308,56 @@ function biblia(){
 // ================= QUIZ =================
 function quiz(){
 
-let q = get("quiz");
-if(!Array.isArray(q)) q = [];
+const container = el("conteudoArea");
 
-let html = "<h2>📊 Quiz Bíblico</h2>";
+db.collection("quiz")
+.get()
+.then((querySnapshot)=>{
+
+let html = "<h2>🧠 Quiz Bíblico</h2>";
+
+// ADMIN
+if(isAdmin()){
+html += `
+<div class="card">
+<input id="pergunta" placeholder="Pergunta">
+<input id="op1" placeholder="Opção 1">
+<input id="op2" placeholder="Opção 2">
+<input id="op3" placeholder="Opção 3">
+<input id="op4" placeholder="Opção 4">
+<input id="correta" placeholder="Resposta correta (1-4)">
+<button onclick="addQuiz()">Salvar</button>
+</div>
+`;
+}
+
+querySnapshot.forEach((doc)=>{
+
+let q = doc.data();
+
+html += `
+<div class="card">
+<p><b>${q.pergunta}</b></p>
+
+<button onclick="responderQuiz('${doc.id}',1)">${q.op1}</button>
+<button onclick="responderQuiz('${doc.id}',2)">${q.op2}</button>
+<button onclick="responderQuiz('${doc.id}',3)">${q.op3}</button>
+<button onclick="responderQuiz('${doc.id}',4)">${q.op4}</button>
+
+${isAdmin() ? `
+<button onclick="excluirQuiz('${doc.id}')">🗑 Excluir</button>
+` : ""}
+
+</div>
+`;
+
+});
+
+container.innerHTML = html;
+
+});
+
+}
 
 /* ================= ADMIN ================= */
 if(isAdmin()){
@@ -1485,47 +1435,23 @@ return html;
 // ================= ADICIONAR PERGUNTA =================
 function addQuiz(){
 
-let q = get("quiz");
-if(!Array.isArray(q)) q = [];
-
-let pergunta = el("pergunta").value.trim();
-let op1 = el("op1").value.trim();
-let op2 = el("op2").value.trim();
-let op3 = el("op3").value.trim();
-let op4 = el("op4").value.trim();
+let pergunta = el("pergunta").value;
+let op1 = el("op1").value;
+let op2 = el("op2").value;
+let op3 = el("op3").value;
+let op4 = el("op4").value;
 let correta = parseInt(el("correta").value);
 
-if(!pergunta || !op1 || !op2 || !op3 || !op4 || !correta){
-alert("Preencha todos os campos!");
+if(!pergunta || !op1 || !op2 || !op3 || !op4){
+alert("Preencha tudo");
 return;
 }
 
-if(correta < 1 || correta > 4){
-alert("Resposta correta deve ser entre 1 e 4");
-return;
-}
+db.collection("quiz").add({
+pergunta, op1, op2, op3, op4, correta
+})
+.then(()=>abrirPagina("quiz"));
 
-q.push({
-pergunta,
-op1,
-op2,
-op3,
-op4,
-correta
-});
-
-set("quiz", q);
-
-// limpa campos
-el("pergunta").value = "";
-el("op1").value = "";
-el("op2").value = "";
-el("op3").value = "";
-el("op4").value = "";
-el("correta").value = "";
-
-/* 🔥 CORREÇÃO AQUI */
-abrirPagina("quiz");
 }
 
 // ================= RESPONDER =================
@@ -1560,17 +1486,15 @@ set("pontos", pontos);
 }
 
 // ================= EXCLUIR =================
-window.delQuiz = function(i){
+function excluirQuiz(id){
 
-let q = get("quiz");
-if(!Array.isArray(q)) q = [];
+if(confirm("Excluir pergunta?")){
 
-q.splice(i,1);
+db.collection("quiz").doc(id).delete()
+.then(()=>abrirPagina("quiz"));
 
-set("quiz", q);
+}
 
-/* 🔥 garante atualização imediata */
-abrirPagina("quiz");
 }
 
 // ================= RANKING (CAMPEONATO) =================

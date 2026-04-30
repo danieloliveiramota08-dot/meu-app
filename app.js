@@ -1291,6 +1291,36 @@ function quiz(){
 
       let html = "<h2>🧠 Quiz Bíblico</h2>";
 
+      // ✅ FORMULÁRIO ADMIN
+      if(isAdmin()){
+        html += `
+        <div class="card">
+          <h3>➕ Nova Pergunta</h3>
+
+          <input id="pergunta" placeholder="Pergunta">
+
+          <input id="op1" placeholder="Opção 1">
+          <input id="op2" placeholder="Opção 2">
+          <input id="op3" placeholder="Opção 3">
+          <input id="op4" placeholder="Opção 4">
+
+          <select id="correta">
+            <option value="1">Opção 1 correta</option>
+            <option value="2">Opção 2 correta</option>
+            <option value="3">Opção 3 correta</option>
+            <option value="4">Opção 4 correta</option>
+          </select>
+
+          <button onclick="addQuiz()">Salvar pergunta</button>
+        </div>
+        `;
+      }
+
+      // ✅ LISTA DE PERGUNTAS
+      if(querySnapshot.empty){
+        html += "<div class='card'>Nenhuma pergunta cadastrada.</div>";
+      }
+
       querySnapshot.forEach((doc)=>{
 
         let x = doc.data();
@@ -1306,6 +1336,7 @@ function quiz(){
           <button onclick="responderQuiz('${doc.id}',4)">${x.op4}</button>
         `;
 
+        // ✅ BOTÃO EXCLUIR (ADMIN)
         if(isAdmin()){
           html += `
           <br><br>
@@ -1331,48 +1362,6 @@ function quiz(){
       console.error("Erro ao carregar quiz:", error);
       container.innerHTML = "Erro ao carregar quiz ❌";
     });
-
-}
-
-// ================= ADICIONAR PERGUNTA =================
-function addQuiz(){
-
-let pergunta = el("pergunta").value;
-let op1 = el("op1").value;
-let op2 = el("op2").value;
-let op3 = el("op3").value;
-let op4 = el("op4").value;
-let correta = parseInt(el("correta").value);
-
-if(!pergunta || !op1 || !op2 || !op3 || !op4){
-alert("Preencha tudo");
-return;
-}
-
-db.collection("quiz").add({
-pergunta, op1, op2, op3, op4, correta
-})
-.then(()=>abrirPagina("quiz"));
-
-}
-
-// ================= EXCLUIR QUIZ =================
-function delQuiz(id){
-
-if(confirm("Deseja excluir essa pergunta?")){
-
-db.collection("quiz")
-.doc(id)
-.delete()
-.then(()=>{
-alert("Pergunta excluída ✅");
-abrirPagina("quiz");
-})
-.catch((error)=>{
-console.error("Erro ao excluir:", error);
-});
-
-}
 
 }
 

@@ -283,25 +283,21 @@ function addMembro(){
 
 }
 
-// ================= MOSTRAR MEMBROS =================
-function carregarMembros(){
+// ================= ADMIN VER MEMBROS =================
+function adminMembros(){
 
   const container = el("conteudoArea");
+
+  container.innerHTML = "<h2>Carregando membros...</h2>";
 
   db.collection("membros")
     .get()
     .then((querySnapshot) => {
 
-      let html = `
-        <h2>👥 Membros cadastrados</h2>
-      `;
+      let html = `<h2>👥 Membros cadastrados</h2>`;
 
       if(querySnapshot.empty){
-
-        html += `
-          <p>Nenhum membro cadastrado ainda.</p>
-        `;
-
+        html += "<p>Nenhum membro encontrado.</p>";
       }
 
       querySnapshot.forEach((doc) => {
@@ -311,24 +307,23 @@ function carregarMembros(){
         html += `
           <div style="
             background:#fff;
-            padding:10px;
+            padding:12px;
             margin-bottom:10px;
-            border-radius:8px;
+            border-radius:10px;
           ">
 
-            <strong>${m.nome || "Sem nome"}</strong><br>
+            <strong>👤 Nome:</strong> ${m.nome || "-"} <br>
+            <strong>🪪 CPF:</strong> ${m.cpf || "-"} <br>
+            <strong>🎂 Nascimento:</strong> ${m.nascimento || "-"} <br>
+            <strong>📱 Celular:</strong> ${m.celular || "-"} <br>
+            <strong>🔑 Login:</strong> ${m.login || "-"} <br>
 
-            CPF: ${m.cpf || "Não informado"}<br>
-            Nascimento: ${m.nascimento || "Não informado"}<br>
-            Celular: ${m.celular || "Não informado"}<br>
-            Login: ${m.login || "Não informado"}
-
-            <br><br>
+            <br>
 
             <button onclick="excluirMembro('${doc.id}')"
               style="
-                background:#e53935;
-                color:#fff;
+                background:red;
+                color:white;
                 border:none;
                 padding:6px 10px;
                 border-radius:6px;
@@ -350,7 +345,7 @@ function carregarMembros(){
       console.error("Erro ao carregar membros:", error);
 
       container.innerHTML = `
-        <p>Erro ao carregar membros ⚠</p>
+        <h2>Erro ao carregar membros ❌</h2>
       `;
 
     });

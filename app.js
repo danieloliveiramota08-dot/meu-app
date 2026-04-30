@@ -1161,43 +1161,7 @@ function estudoBiblico(){
 
       let html = `<h2>📚 Estudo Bíblico</h2>`;
 
-      if(isAdmin()){
-        html += `
-        <div class="card">
-          <input id="estTema" placeholder="Tema">
-          <textarea id="estTexto"></textarea>
-          <input id="estRef" placeholder="Referência">
-          <button onclick="addEstudo()">Salvar</button>
-        </div>
-        `;
-      }
-
-      if(querySnapshot.empty){
-        html += `<div class="card">Nenhum estudo ainda</div>`;
-      }
-
-      querySnapshot.forEach((doc)=>{
-        let e = doc.data();
-
-        html += `
-        <div class="card">
-          <h3>${e.tema}</h3>
-          <p>${e.texto}</p>
-          <small>${e.ref || ""}</small>
-        </div>
-        `;
-      });
-
-      container.innerHTML = html;
-
-    })
-    .catch((error)=>{
-      console.error("Erro estudos:", error);
-      container.innerHTML = "Erro ao carregar estudos ❌";
-    });
-}
-
-      // ADMIN FORM
+      // FORM ADMIN
       if(isAdmin()){
         html += `
         <div class="card">
@@ -1212,19 +1176,21 @@ function estudoBiblico(){
         `;
       }
 
+      // SEM ESTUDOS
       if(querySnapshot.empty){
-        html += `<div class="card">Nenhum estudo ainda.</div>`;
+        html += `<div class="card">📭 Nenhum estudo ainda.</div>`;
       }
 
+      // LISTA
       querySnapshot.forEach((doc)=>{
 
         let e = doc.data();
 
         html += `
         <div class="card">
-          <h3>${e.tema}</h3>
+          <h3>📖 ${e.tema}</h3>
           <p>${e.texto}</p>
-          <small>${e.ref || ""}</small>
+          <small>📌 ${e.ref || ""}</small>
         `;
 
         if(isAdmin()){
@@ -1241,53 +1207,11 @@ function estudoBiblico(){
 
       container.innerHTML = html;
 
+    })
+    .catch((error)=>{
+      console.error("Erro estudos:", error);
+      container.innerHTML = "Erro ao carregar estudos ❌";
     });
-}
-
-/* ================= LISTA ================= */
-if(lista.length === 0){
-html += `<div class="card">📭 Nenhum estudo publicado ainda.</div>`;
-}
-
-lista.forEach((e,i)=>{
-
-html += `
-<div class="card">
-<h3>📖 ${e.tema}</h3>
-<p>${e.texto}</p>
-<small>📌 ${e.ref || ""}</small>
-`;
-
-if(isAdmin()){
-html += `
-<br><br>
-<button onclick="delEstudo(${i})">🗑️ Excluir</button>
-`;
-}
-
-html += `</div>`;
-});
-
-return html;
-}
-
-// ================= CARREGAR =================
-function carregarEdicaoEstudo(i){
-
-let lista = get("estudosBiblicos");
-if(!Array.isArray(lista)) return;
-
-let e = lista[i];
-
-el("estTema").value = e.tema;
-el("estTexto").value = e.texto;
-el("estRef").value = e.ref || "";
-
-// salva índice como número (CORRETO)
-localStorage.setItem("editEstudoIndex", String(i));
-
-// feedback visual
-alert("Modo edição ativado ✏️");
 }
 
 // ================= SALVAR =================
@@ -1311,8 +1235,12 @@ function addEstudo(){
   .then(()=>{
     alert("Estudo salvo ✅");
     abrirPagina("estudoBiblico");
+  })
+  .catch((error)=>{
+    console.error("Erro ao salvar:", error);
   });
 }
+
 // ================= EXCLUIR =================
 function delEstudo(id){
 
@@ -1323,6 +1251,9 @@ function delEstudo(id){
       .delete()
       .then(()=>{
         abrirPagina("estudoBiblico");
+      })
+      .catch((error)=>{
+        console.error("Erro ao excluir:", error);
       });
 
   }

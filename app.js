@@ -1448,13 +1448,21 @@ pergunta, op1, op2, op3, op4, correta
 
 }
 
-// ================= DELETE QUIZ =================
+// ================= EXCLUIR QUIZ =================
 function delQuiz(id){
 
-if(confirm("Excluir pergunta?")){
+if(confirm("Deseja excluir essa pergunta?")){
 
-db.collection("quiz").doc(id).delete()
-.then(()=>abrirPagina("quiz"));
+db.collection("quiz")
+.doc(id)
+.delete()
+.then(()=>{
+alert("Pergunta excluída ✅");
+abrirPagina("quiz");
+})
+.catch((error)=>{
+console.error("Erro ao excluir:", error);
+});
 
 }
 
@@ -1505,7 +1513,7 @@ function responderQuiz(id, resposta){
 // ================= RANKING (CAMPEONATO) =================
 function verRanking(){
 
-let p = JSON.parse(localStorage.getItem("pontos") || "{}");
+let p = get("pontos") || {};
 
 let lista = [];
 
@@ -1519,7 +1527,35 @@ let html = "<h2>🏆 Ranking - Campeonato</h2>";
 
 if(lista.length === 0){
 html += "<div class='card'>Nenhum jogador ainda.</div>";
+el("conteudoArea").innerHTML = html;
 return;
+}
+
+html += `
+<div style="overflow-x:auto;">
+<table style="width:100%;border-collapse:collapse;background:#fff;">
+<tr>
+<th>Posição</th>
+<th>Jogador</th>
+<th>Pontos</th>
+</tr>
+`;
+
+lista.forEach((x,index)=>{
+
+html += `
+<tr>
+<td>${index+1}º</td>
+<td>${x.u}</td>
+<td>${x.pts}</td>
+</tr>
+`;
+
+});
+
+html += `</table></div>`;
+
+el("conteudoArea").innerHTML = html;
 }
 
 /* ================= TABELA ================= */

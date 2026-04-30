@@ -1025,13 +1025,23 @@ function renderPedidos(){
 // ================= EXCLUIR PEDIDO =================
 function excluirPedido(id){
 
-  let pedidos = get("pedidos_oracao");
+  if(confirm("Deseja excluir este pedido?")){
 
-  pedidos = pedidos.filter(p => p.id !== id);
+    db.collection("pedidos")
+      .doc(id)
+      .delete()
+      .then(() => {
 
-  set("pedidos_oracao", pedidos);
+        alert("Pedido excluído 🙏");
+        pedidosRecebidos();
 
-  renderPedidos();
+      })
+      .catch((error) => {
+        console.error("Erro ao excluir:", error);
+      });
+
+  }
+
 }
 
 // ================= PEDIDOS RECEBIDOS =================
@@ -1455,45 +1465,44 @@ pergunta, op1, op2, op3, op4, correta
 }
 
 // ================= RESPONDER =================
-function responderQuiz(i,r){
+function responderQuiz(id, resposta){
 
-let q = get("quiz") || [];
+  db.collection("quiz").doc(id).get()
+  .then((doc)=>{
 
-let usuario = get("usuarioLogado");
+    if(!doc.exists){
+      alert("Pergunta não encontrada ❌");
+      return;
+    }
 
-let user = usuario ? usuario.login : "anonimo";
+    let q = doc.data();
 
-let pontos = get("pontos") || {};
+    let usuario = get("usuarioLogado");
+    let user = usuario ? usuario.login : "anonimo";
 
-if(!pontos[user]){
-pontos[user] = 0;
-}
+    let pontos = get("pontos") || {};
 
-if(q[i].correta === r){
+    if(!pontos[user]){
+      pontos[user] = 0;
+    }
 
-pontos[user]++;
+    if(q.correta === resposta){
 
-alert("✔ Resposta correta!");
+      pontos[user]++;
+      alert("✔ Resposta correta!");
 
-}else{
+    }else{
 
-alert("❌ Resposta errada!");
+      alert("❌ Resposta errada!");
 
-}
+    }
 
-set("pontos", pontos);
+    set("pontos", pontos);
 
-}
-
-// ================= EXCLUIR =================
-function excluirQuiz(id){
-
-if(confirm("Excluir pergunta?")){
-
-db.collection("quiz").doc(id).delete()
-.then(()=>abrirPagina("quiz"));
-
-}
+  })
+  .catch((error)=>{
+    console.error("Erro ao responder:", error);
+  });
 
 }
 
@@ -1625,53 +1634,47 @@ ebd();
 // ================= ANIVERSARIANTES =================
 function aniversariantes(){
 
-let membros = JSON.parse(localStorage.getItem("membros")) || [];
+  const container = el("conteudoArea");
 
-let mesAtual = new Date().getMonth() + 1;
+  let mesAtual = new Date().getMonth() + 1;
 
-let html = `
-<h2 style="text-align:center;">🎂 Aniversariantes do Mês</h2>
-`;
+  db.collection("membros").get().then((querySnapshot)=>{
 
-let encontrados = [];
+    let html = `<h2>🎂 Aniversariantes do Mês</h2>`;
 
-membros.forEach(m => {
+    let encontrou = false;
 
-if(!m || !m.nome || !m.nascimento) return;
+    querySnapshot.forEach((doc)=>{
 
-let data = String(m.nascimento).split("-");
+      let m = doc.data();
 
-// formato YYYY-MM-DD (input type=date)
-let mes;
+      if(!m.nascimento) return;
 
-if(data.length === 3){
-mes = parseInt(data[1]);
-}
+      let partes = m.nascimento.split("-");
+      let mes = parseInt(partes[1]);
 
-if(mes === mesAtual){
+      if(mes === mesAtual){
 
-encontrados.push(m);
+        encontrou = true;
 
-html += `
-<div class="card">
-<h3>🎉 ${m.nome}</h3>
-<p>📅 ${m.nascimento}</p>
-<p>📱 ${m.celular || "Não informado"}</p>
-</div>
-`;
-}
+        html += `
+          <div class="card">
+            <h3>${m.nome}</h3>
+            <p>${m.nascimento}</p>
+          </div>
+        `;
+      }
 
-});
+    });
 
-if(encontrados.length === 0){
-html += `
-<div class="card" style="text-align:center;">
-📭 Nenhum aniversariante neste mês
-</div>
-`;
-}
+    if(!encontrou){
+      html += `<p>Ninguém faz aniversário este mês</p>`;
+    }
 
-return html;
+    container.innerHTML = html;
+
+  });
+
 }
 
 // ================= LOGOUT =================

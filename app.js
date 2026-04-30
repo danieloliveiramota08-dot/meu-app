@@ -1295,63 +1295,49 @@ function biblia(){
 // ================= QUIZ =================
 function quiz(){
 
-const container = el("conteudoArea");
+  const container = el("conteudoArea");
 
-db.collection("quiz")
-.get()
-.then((querySnapshot)=>{
+  db.collection("quiz")
+  .get()
+  .then((querySnapshot)=>{
 
-let html = "<h2>🧠 Quiz Bíblico</h2>";
+    let html = "<h2>🧠 Quiz Bíblico</h2>";
 
-if(isAdmin()){
-html += `
-<div class="card">
-<h3>➕ Nova Pergunta</h3>
+    querySnapshot.forEach((doc)=>{
 
-<input id="pergunta" placeholder="Pergunta">
+      let x = doc.data();
 
-<input id="op1" placeholder="Opção 1">
-<input id="op2" placeholder="Opção 2">
-<input id="op3" placeholder="Opção 3">
-<input id="op4" placeholder="Opção 4">
+      html += `
+      <div class="card">
 
-<input id="correta" placeholder="Resposta correta (1-4)">
+        <p><b>${x.pergunta}</b></p>
 
-<button onclick="addQuiz()">💾 Salvar Pergunta</button>
-</div>
-`;
+        <button onclick="responderQuiz('${doc.id}',1)">${x.op1}</button>
+        <button onclick="responderQuiz('${doc.id}',2)">${x.op2}</button>
+        <button onclick="responderQuiz('${doc.id}',3)">${x.op3}</button>
+        <button onclick="responderQuiz('${doc.id}',4)">${x.op4}</button>
+      `;
+
+      if(isAdmin()){
+        html += `
+        <br><br>
+        <button onclick="delQuiz('${doc.id}')">
+          🗑️ Excluir pergunta
+        </button>
+        `;
+      }
+
+      html += `</div>`;
+    });
+
+    container.innerHTML = html;
+
+  })
+  .catch((error)=>{
+    console.error("Erro ao carregar quiz:", error);
+  });
+
 }
-
-if(querySnapshot.empty){
-html += "<p>Nenhuma pergunta cadastrada</p>";
-}
-
-querySnapshot.forEach((doc)=>{
-
-let x = doc.data();
-
-html += `
-<div class="card">
-
-<p><b>${x.pergunta}</b></p>
-
-<button onclick="responderQuiz('${doc.id}',1)">${x.op1}</button>
-<button onclick="responderQuiz('${doc.id}',2)">${x.op2}</button>
-<button onclick="responderQuiz('${doc.id}',3)">${x.op3}</button>
-<button onclick="responderQuiz('${doc.id}',4)">${x.op4}</button>
-
-</div>
-`;
-
-});
-
-// 👉 MOSTRA NA TELA (AO INVÉS DE RETURN)
-container.innerHTML = html;
-
-})
-.catch((error)=>{
-console.error("Erro ao carregar quiz:", error);
-});
   
 /* ================= ADMIN ================= */
 if(isAdmin()){
@@ -1376,44 +1362,49 @@ html += `
 }
 
 /* ================= LISTA ================= */
-q.forEach((x,i)=>{
+db.collection("quiz")
+.get()
+.then((querySnapshot)=>{
+
+let html = "<h2>🧠 Quiz Bíblico</h2>";
+
+querySnapshot.forEach((doc)=>{
+
+let x = doc.data();
 
 html += `
 <div class="card">
 
 <p><b>${x.pergunta}</b></p>
 
-<button onclick="responderQuiz(${i},1)">
+<button onclick="responderQuiz('${doc.id}',1)">
 ${x.op1}
 </button>
 
-<button onclick="responderQuiz(${i},2)">
+<button onclick="responderQuiz('${doc.id}',2)">
 ${x.op2}
 </button>
 
-<button onclick="responderQuiz(${i},3)">
+<button onclick="responderQuiz('${doc.id}',3)">
 ${x.op3}
 </button>
 
-<button onclick="responderQuiz(${i},4)">
+<button onclick="responderQuiz('${doc.id}',4)">
 ${x.op4}
 </button>
 `;
 
 if(isAdmin()){
-
 html += `
 <br><br>
 
-<button onclick="delQuiz(${i})">
+<button onclick="delQuiz('${doc.id}')">
 🗑️ Excluir pergunta
 </button>
 `;
-
 }
 
 html += `</div>`;
-
 });
 
 html += `
@@ -1422,9 +1413,12 @@ html += `
 </button>
 `;
 
-return html;
+el("conteudoArea").innerHTML = html;
 
-}
+})
+.catch((error)=>{
+console.error("Erro ao carregar quiz:", error);
+});
 
 // ================= ADICIONAR PERGUNTA =================
 function addQuiz(){

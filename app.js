@@ -1161,6 +1161,42 @@ function estudoBiblico(){
 
       let html = `<h2>📚 Estudo Bíblico</h2>`;
 
+      if(isAdmin()){
+        html += `
+        <div class="card">
+          <input id="estTema" placeholder="Tema">
+          <textarea id="estTexto"></textarea>
+          <input id="estRef" placeholder="Referência">
+          <button onclick="addEstudo()">Salvar</button>
+        </div>
+        `;
+      }
+
+      if(querySnapshot.empty){
+        html += `<div class="card">Nenhum estudo ainda</div>`;
+      }
+
+      querySnapshot.forEach((doc)=>{
+        let e = doc.data();
+
+        html += `
+        <div class="card">
+          <h3>${e.tema}</h3>
+          <p>${e.texto}</p>
+          <small>${e.ref || ""}</small>
+        </div>
+        `;
+      });
+
+      container.innerHTML = html;
+
+    })
+    .catch((error)=>{
+      console.error("Erro estudos:", error);
+      container.innerHTML = "Erro ao carregar estudos ❌";
+    });
+}
+
       // ADMIN FORM
       if(isAdmin()){
         html += `

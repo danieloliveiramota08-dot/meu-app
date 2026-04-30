@@ -1330,51 +1330,24 @@ html += `
 
 <p><b>${x.pergunta}</b></p>
 
-<button onclick="responderQuiz('${doc.id}',1)">
-${x.op1}
-</button>
+<button onclick="responderQuiz('${doc.id}',1)">${x.op1}</button>
+<button onclick="responderQuiz('${doc.id}',2)">${x.op2}</button>
+<button onclick="responderQuiz('${doc.id}',3)">${x.op3}</button>
+<button onclick="responderQuiz('${doc.id}',4)">${x.op4}</button>
 
-<button onclick="responderQuiz('${doc.id}',2)">
-${x.op2}
-</button>
-
-<button onclick="responderQuiz('${doc.id}',3)">
-${x.op3}
-</button>
-
-<button onclick="responderQuiz('${doc.id}',4)">
-${x.op4}
-</button>
+</div>
 `;
 
-if(isAdmin()){
-html += `
-<br><br>
-<button onclick="delQuiz('${doc.id}')">
-🗑️ Excluir pergunta
-</button>
-`;
-}
-
-html += `</div>`;
 });
 
-html += `
-<button onclick="verRanking()">
-🏆 Ver Ranking
-</button>
-`;
-
+// 👉 MOSTRA NA TELA (AO INVÉS DE RETURN)
 container.innerHTML = html;
 
 })
 .catch((error)=>{
 console.error("Erro ao carregar quiz:", error);
-container.innerHTML = "<p>Erro ao carregar quiz ❌</p>";
 });
-
-}
-
+  
 /* ================= ADMIN ================= */
 if(isAdmin()){
 

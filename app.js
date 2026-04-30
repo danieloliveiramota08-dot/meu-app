@@ -1366,6 +1366,20 @@ function quiz(){
 
 }
 
+// ================= EXCLUIR =================
+window.delQuiz = function(i){
+
+let q = get("quiz");
+if(!Array.isArray(q)) q = [];
+
+q.splice(i,1);
+
+set("quiz", q);
+
+/* 🔥 garante atualização imediata */
+abrirPagina("quiz");
+}
+
 // ================= SALVAR =================
 function addQuiz(){
 

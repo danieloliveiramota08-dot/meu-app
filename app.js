@@ -1442,98 +1442,120 @@ function delQuiz(id){
 // ================= RESPONDER =================
 function responderQuiz(id, resposta){
 
-  db.collection("quiz").doc(id).get()
-  .then((doc)=>{
+  let usuario = get("usuarioLogado");
+  let user = usuario ? usuario.login : "anonimo";
 
-    if(!doc.exists){
-      alert("Pergunta não encontrada ❌");
-      return;
-    }
+  // 🔒 VERIFICA SE JÁ RESPONDEU
+  db.collection("respostas")
+    .where("user", "==", user)
+    .where("perguntaId", "==", id)
+    .get()
+    .then((querySnapshot)=>{
 
-    let q = doc.data();
+      if(!querySnapshot.empty){
+        alert("Você já respondeu essa pergunta! ⚠️");
+        return;
+      }
 
-    let usuario = get("usuarioLogado");
-    let user = usuario ? usuario.login : "anonimo";
+      // 🔥 BUSCA PERGUNTA
+      db.collection("quiz").doc(id).get()
+      .then((doc)=>{
 
-    let pontos = get("pontos") || {};
+        let q = doc.data();
 
-    if(!pontos[user]){
-      pontos[user] = 0;
-    }
+        let acertou = (q.correta === resposta);
 
-    if(q.correta === resposta){
+        // 💾 SALVA RESPOSTA
+        db.collection("respostas").add({
+          user: user,
+          perguntaId: id,
+          correta: acertou,
+          data: new Date()
+        })
+        .then(()=>{
 
-      pontos[user]++;
-      alert("✔ Resposta correta!");
+          if(acertou){
+            alert("✔ Resposta correta!");
+          }else{
+            alert("❌ Resposta errada!");
+          }
 
-    }else{
+        });
 
-      alert("❌ Resposta errada!");
+      });
 
-    }
-
-    set("pontos", pontos);
-
-  })
-  .catch((error)=>{
-    console.error("Erro ao responder:", error);
-  });
+    });
 
 }
 
 // ================= RANKING (CAMPEONATO) =================
 function verRanking(){
 
-  let p = get("pontos") || {};
-  let lista = [];
+  db.collection("respostas")
+    .get()
+    .then((querySnapshot)=>{
 
-  for(let u in p){
-    lista.push({u, pts:p[u]});
-  }
+      let ranking = {};
 
-  lista.sort((a,b)=>b.pts-a.pts);
+      querySnapshot.forEach((doc)=>{
 
-  let html = "<h2>🏆 Ranking - Campeonato</h2>";
+        let r = doc.data();
 
-  if(lista.length === 0){
-    html += "<div class='card'>Nenhum jogador ainda.</div>";
-  } else {
+        if(!ranking[r.user]){
+          ranking[r.user] = 0;
+        }
 
-    html += `
-    <div style="overflow-x:auto;">
-    <table style="width:100%;border-collapse:collapse;background:#fff;">
-    <tr>
-      <th>Posição</th>
-      <th>Jogador</th>
-      <th>Pontos</th>
-    </tr>
-    `;
+        if(r.correta){
+          ranking[r.user]++;
+        }
 
-    lista.forEach((x,index)=>{
+      });
+
+      let lista = [];
+
+      for(let u in ranking){
+        lista.push({u, pts: ranking[u]});
+      }
+
+      lista.sort((a,b)=>b.pts-a.pts);
+
+      let html = "<h2>🏆 Ranking - Campeonato</h2>";
+
+      if(lista.length === 0){
+        html += "<div class='card'>Nenhum jogador ainda.</div>";
+      } else {
+
+        html += `
+        <table style="width:100%;background:#fff;">
+        <tr>
+          <th>Posição</th>
+          <th>Jogador</th>
+          <th>Pontos</th>
+        </tr>
+        `;
+
+        lista.forEach((x,i)=>{
+          html += `
+          <tr>
+            <td>${i+1}º</td>
+            <td>${x.u}</td>
+            <td>${x.pts}</td>
+          </tr>
+          `;
+        });
+
+        html += "</table>";
+      }
+
       html += `
-      <tr>
-        <td>${index+1}º</td>
-        <td>${x.u}</td>
-        <td>${x.pts}</td>
-      </tr>
+      <br>
+      <button onclick="abrirPagina('quiz')">⬅️ Voltar</button>
       `;
+
+      el("conteudoArea").innerHTML = html;
+
     });
 
-    html += `</table></div>`;
-  }
-
-  // ✅ BOTÃO VOLTAR
-  html += `
-  <br>
-  <div style="text-align:center;">
-    <button onclick="abrirPagina('quiz')"
-    style="padding:10px 20px;background:#4CAF50;color:#fff;border:none;border-radius:10px;">
-      ⬅️ Voltar para o Quiz
-    </button>
-  </div>
-  `;
-
-  el("conteudoArea").innerHTML = html;
 }
 
 // ================= EBD =================

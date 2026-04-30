@@ -2,17 +2,11 @@
 function el(id){ return document.getElementById(id); }
 
 function get(k){
-
-let data = localStorage.getItem(k);
-
-if(!data) return null;
-
 try{
-return JSON.parse(data);
+return JSON.parse(localStorage.getItem(k)) || [];
 }catch(e){
-return null;
+return [];
 }
-
 }
 
 function set(k,v){
@@ -1022,28 +1016,6 @@ function renderPedidos(){
   `).join("");
 }
 
-// ================= EXCLUIR PEDIDO =================
-function excluirPedido(id){
-
-  if(confirm("Deseja excluir este pedido?")){
-
-    db.collection("pedidos")
-      .doc(id)
-      .delete()
-      .then(() => {
-
-        alert("Pedido excluído 🙏");
-        pedidosRecebidos();
-
-      })
-      .catch((error) => {
-        console.error("Erro ao excluir:", error);
-      });
-
-  }
-
-}
-
 // ================= PEDIDOS RECEBIDOS =================
 function pedidosRecebidos(){
 
@@ -1326,6 +1298,83 @@ db.collection("quiz")
 
 let html = "<h2>🧠 Quiz Bíblico</h2>";
 
+if(isAdmin()){
+html += `
+<div class="card">
+<h3>➕ Nova Pergunta</h3>
+
+<input id="pergunta" placeholder="Pergunta">
+
+<input id="op1" placeholder="Opção 1">
+<input id="op2" placeholder="Opção 2">
+<input id="op3" placeholder="Opção 3">
+<input id="op4" placeholder="Opção 4">
+
+<input id="correta" placeholder="Resposta correta (1-4)">
+
+<button onclick="addQuiz()">💾 Salvar Pergunta</button>
+</div>
+`;
+}
+
+if(querySnapshot.empty){
+html += "<p>Nenhuma pergunta cadastrada</p>";
+}
+
+querySnapshot.forEach((doc)=>{
+
+let x = doc.data();
+
+html += `
+<div class="card">
+
+<p><b>${x.pergunta}</b></p>
+
+<button onclick="responderQuiz('${doc.id}',1)">
+${x.op1}
+</button>
+
+<button onclick="responderQuiz('${doc.id}',2)">
+${x.op2}
+</button>
+
+<button onclick="responderQuiz('${doc.id}',3)">
+${x.op3}
+</button>
+
+<button onclick="responderQuiz('${doc.id}',4)">
+${x.op4}
+</button>
+`;
+
+if(isAdmin()){
+html += `
+<br><br>
+<button onclick="delQuiz('${doc.id}')">
+🗑️ Excluir pergunta
+</button>
+`;
+}
+
+html += `</div>`;
+});
+
+html += `
+<button onclick="verRanking()">
+🏆 Ver Ranking
+</button>
+`;
+
+container.innerHTML = html;
+
+})
+.catch((error)=>{
+console.error("Erro ao carregar quiz:", error);
+container.innerHTML = "<p>Erro ao carregar quiz ❌</p>";
+});
+
+}
+
 /* ================= ADMIN ================= */
 if(isAdmin()){
 
@@ -1418,6 +1467,18 @@ db.collection("quiz").add({
 pergunta, op1, op2, op3, op4, correta
 })
 .then(()=>abrirPagina("quiz"));
+
+}
+
+// ================= DELETE QUIZ =================
+function delQuiz(id){
+
+if(confirm("Excluir pergunta?")){
+
+db.collection("quiz").doc(id).delete()
+.then(()=>abrirPagina("quiz"));
+
+}
 
 }
 

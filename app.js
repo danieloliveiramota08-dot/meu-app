@@ -1281,7 +1281,6 @@ function biblia(){
 }
 
 // ================= QUIZ =================
-// ================= QUIZ =================
 function quiz(){
 
   const container = el("conteudoArea");
@@ -1366,20 +1365,6 @@ function quiz(){
 
 }
 
-// ================= EXCLUIR =================
-window.delQuiz = function(i){
-
-let q = get("quiz");
-if(!Array.isArray(q)) q = [];
-
-q.splice(i,1);
-
-set("quiz", q);
-
-/* 🔥 garante atualização imediata */
-abrirPagina("quiz");
-}
-
 // ================= SALVAR =================
 function addQuiz(){
 
@@ -1428,6 +1413,29 @@ function addQuiz(){
     console.error("Erro ao salvar pergunta:", error);
     alert("Erro ao salvar ❌");
   });
+
+}
+
+// ================= EXCLUIR QUIZ =================
+function delQuiz(id){
+
+  console.log("Excluir ID:", id);
+
+  if(confirm("Deseja excluir essa pergunta?")){
+
+    db.collection("quiz")
+      .doc(id)
+      .delete()
+      .then(()=>{
+        alert("Pergunta excluída ✅");
+        abrirPagina("quiz");
+      })
+      .catch((error)=>{
+        console.error("Erro ao excluir:", error);
+        alert("Erro ao excluir ❌");
+      });
+
+  }
 
 }
 

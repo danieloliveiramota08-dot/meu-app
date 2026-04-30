@@ -739,171 +739,93 @@ function excluirPix(){
 }
 
 // ================= AVISOS =================
-
 function avisos(){
 
-let lista =
-JSON.parse(localStorage.getItem("avisos")) || [];
+const container = el("conteudoArea");
 
-let html = `
+db.collection("avisos")
+.orderBy("data", "desc")
+.get()
+.then((querySnapshot)=>{
 
-<h2>📢 Avisos</h2>
+let html = `<h2>📢 Avisos</h2>`;
 
-<div class="avisosContainer">
-
-`;
-
-
-/* ADMIN — FORMULÁRIO */
-
+// ADMIN FORM
 if(isAdmin()){
-
 html += `
-
-<div class="addAvisoBox">
-
-<h3>➕ Novo Aviso</h3>
-
-<input id="tituloAviso"
-placeholder="Título do aviso">
-
-<textarea id="textoAviso"
-placeholder="Escreva o aviso aqui..."></textarea>
-
-<button onclick="addAviso()"
-class="menuBtn">
-📢 Publicar Aviso
-</button>
-
+<div class="card">
+<input id="tituloAviso" placeholder="Título">
+<textarea id="textoAviso" placeholder="Texto"></textarea>
+<button onclick="addAviso()">Publicar</button>
 </div>
-
 `;
-
 }
 
-
-/* SEM AVISOS */
-
-if(lista.length === 0){
-
-html += `
-
-<div class="avisoCard">
-
-📭 Nenhum aviso publicado.
-
-</div>
-
-`;
-
+if(querySnapshot.empty){
+html += `<p>Nenhum aviso ainda</p>`;
 }
 
+querySnapshot.forEach((doc)=>{
 
-/* LISTA */
-
-lista.forEach((a,i)=>{
-
-html += `
-
-<div class="avisoCard">
-
-<div class="avisoTitulo">
-📌 ${a.titulo}
-</div>
-
-<div class="avisoTexto">
-${a.texto}
-</div>
-
-`;
-
-
-/* ADMIN — EXCLUIR */
-
-if(isAdmin()){
+let a = doc.data();
 
 html += `
+<div class="card">
+<h3>${a.titulo}</h3>
+<p>${a.texto}</p>
 
-<button onclick="delAviso(${i})"
-class="menuBtn"
-style="margin-top:10px;">
-🗑️ Excluir
-</button>
+${isAdmin() ? `
+<button onclick="excluirAviso('${doc.id}')">🗑 Excluir</button>
+` : ""}
 
+</div>
 `;
-
-}
-
-html += `</div>`;
 
 });
 
-html += `</div>`;
+container.innerHTML = html;
 
-return html;
+});
 
 }
-
-
 
 // ================= ADICIONAR =================
-
 function addAviso(){
 
-let titulo =
-document.getElementById("tituloAviso").value.trim();
-
-let texto =
-document.getElementById("textoAviso").value.trim();
-
+let titulo = el("tituloAviso").value.trim();
+let texto = el("textoAviso").value.trim();
 
 if(!titulo || !texto){
-
 alert("Preencha todos os campos");
-
 return;
-
 }
 
-
-let lista =
-JSON.parse(localStorage.getItem("avisos")) || [];
-
-lista.push({
-titulo,
-texto
+db.collection("avisos").add({
+titulo: titulo,
+texto: texto,
+data: new Date().toLocaleString()
+})
+.then(()=>{
+alert("Aviso publicado ✅");
+abrirPagina("avisos");
+})
+.catch((error)=>{
+console.error("Erro:", error);
 });
 
-
-localStorage.setItem(
-"avisos",
-JSON.stringify(lista)
-);
-
-
-/* RECARREGA */
-
-abrirPagina("avisos");
-
 }
 
-
-
 // ================= EXCLUIR =================
+function excluirAviso(id){
 
-function delAviso(i){
+if(confirm("Excluir aviso?")){
 
-let lista =
-JSON.parse(localStorage.getItem("avisos")) || [];
-
-lista.splice(i,1);
-
-localStorage.setItem(
-"avisos",
-JSON.stringify(lista)
-);
-
+db.collection("avisos").doc(id).delete()
+.then(()=>{
 abrirPagina("avisos");
+});
+
+}
 
 }
 

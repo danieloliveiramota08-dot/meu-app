@@ -1297,9 +1297,6 @@ function quiz(){
 
   const container = el("conteudoArea");
 
-  db.collection("quiz")
-  .get()
-  .then((querySnapshot)=>{
 
     let html = "<h2>🧠 Quiz Bíblico</h2>";
 
@@ -1336,28 +1333,6 @@ function quiz(){
   .catch((error)=>{
     console.error("Erro ao carregar quiz:", error);
   });
-
-}
-  
-/* ================= ADMIN ================= */
-if(isAdmin()){
-
-html += `
-<div class="card">
-<h3>➕ Nova Pergunta</h3>
-
-<input id="pergunta" placeholder="Pergunta">
-
-<input id="op1" placeholder="Opção 1">
-<input id="op2" placeholder="Opção 2">
-<input id="op3" placeholder="Opção 3">
-<input id="op4" placeholder="Opção 4">
-
-<input id="correta" placeholder="Resposta correta (1-4)">
-
-<button onclick="addQuiz()">💾 Salvar Pergunta</button>
-</div>
-`;
 
 }
 
@@ -1551,52 +1526,6 @@ html += `</table></div>`;
 
 el("conteudoArea").innerHTML = html;
 }
-
-/* ================= TABELA ================= */
-html += `
-<div style="overflow-x:auto;">
-<table style="
-width:100%;
-border-collapse:collapse;
-background:#fff;
-border-radius:10px;
-overflow:hidden;
-box-shadow:0 2px 10px rgba(0,0,0,0.1);
-">
-
-<thead>
-<tr style="background:#4CAF50;color:#fff;">
-<th style="padding:10px;">Posição</th>
-<th>Jogador</th>
-<th>Pontos</th>
-</tr>
-</thead>
-
-<tbody>
-`;
-
-lista.forEach((x,index)=>{
-
-let medalha = "";
-
-if(index === 0) medalha = "🥇";
-else if(index === 1) medalha = "🥈";
-else if(index === 2) medalha = "🥉";
-
-html += `
-<tr style="text-align:center;border-bottom:1px solid #eee;">
-<td style="padding:10px;">${medalha} ${index+1}º</td>
-<td>${x.u}</td>
-<td><b>${x.pts}</b></td>
-</tr>
-`;
-});
-
-html += `
-</tbody>
-</table>
-</div>
-`;
 
 /* ================= BOTÃO VOLTAR ================= */
 html += `

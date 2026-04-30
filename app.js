@@ -1410,59 +1410,56 @@ function responderQuiz(id, resposta){
 // ================= RANKING (CAMPEONATO) =================
 function verRanking(){
 
-let p = get("pontos") || {};
-let lista = [];
+  let p = get("pontos") || {};
+  let lista = [];
 
-for(let u in p){
-  lista.push({u, pts:p[u]});
-}
+  for(let u in p){
+    lista.push({u, pts:p[u]});
+  }
 
-lista.sort((a,b)=>b.pts-a.pts);
+  lista.sort((a,b)=>b.pts-a.pts);
 
-let html = "<h2>🏆 Ranking - Campeonato</h2>";
+  let html = "<h2>🏆 Ranking - Campeonato</h2>";
 
-if(lista.length === 0){
-  html += "<div class='card'>Nenhum jogador ainda.</div>";
-  
-  html += botaoVoltar();
-  el("conteudoArea").innerHTML = html;
-  return;
-}
+  if(lista.length === 0){
+    html += "<div class='card'>Nenhum jogador ainda.</div>";
+  } else {
 
-html += `
-<div style="overflow-x:auto;">
-<table style="width:100%;border-collapse:collapse;background:#fff;">
-<tr>
-<th>Posição</th>
-<th>Jogador</th>
-<th>Pontos</th>
-</tr>
-`;
+    html += `
+    <div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;background:#fff;">
+    <tr>
+      <th>Posição</th>
+      <th>Jogador</th>
+      <th>Pontos</th>
+    </tr>
+    `;
 
-lista.forEach((x,index)=>{
+    lista.forEach((x,index)=>{
+      html += `
+      <tr>
+        <td>${index+1}º</td>
+        <td>${x.u}</td>
+        <td>${x.pts}</td>
+      </tr>
+      `;
+    });
+
+    html += `</table></div>`;
+  }
+
+  // ✅ BOTÃO VOLTAR
   html += `
-<tr>
-<td>${index+1}º</td>
-<td>${x.u}</td>
-<td>${x.pts}</td>
-</tr>
-`;
-});
+  <br>
+  <div style="text-align:center;">
+    <button onclick="abrirPagina('quiz')"
+    style="padding:10px 20px;background:#4CAF50;color:#fff;border:none;border-radius:10px;">
+      ⬅️ Voltar para o Quiz
+    </button>
+  </div>
+  `;
 
-html += `</table></div>`;
-
-/* BOTÃO VOLTAR AGORA DENTRO DA FUNÇÃO */
-html += `
-<br>
-<div style="text-align:center;">
-<button onclick="abrirPagina('quiz')" 
-style="padding:10px 20px;background:#4CAF50;color:#fff;border:none;border-radius:10px;">
-⬅️ Voltar para o Quiz
-</button>
-</div>
-`;
-
-el("conteudoArea").innerHTML = html;
+  el("conteudoArea").innerHTML = html;
 }
 
 // ================= EBD =================

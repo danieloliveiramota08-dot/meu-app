@@ -1326,49 +1326,6 @@ db.collection("quiz")
 
 let html = "<h2>🧠 Quiz Bíblico</h2>";
 
-// ADMIN
-if(isAdmin()){
-html += `
-<div class="card">
-<input id="pergunta" placeholder="Pergunta">
-<input id="op1" placeholder="Opção 1">
-<input id="op2" placeholder="Opção 2">
-<input id="op3" placeholder="Opção 3">
-<input id="op4" placeholder="Opção 4">
-<input id="correta" placeholder="Resposta correta (1-4)">
-<button onclick="addQuiz()">Salvar</button>
-</div>
-`;
-}
-
-querySnapshot.forEach((doc)=>{
-
-let q = doc.data();
-
-html += `
-<div class="card">
-<p><b>${q.pergunta}</b></p>
-
-<button onclick="responderQuiz('${doc.id}',1)">${q.op1}</button>
-<button onclick="responderQuiz('${doc.id}',2)">${q.op2}</button>
-<button onclick="responderQuiz('${doc.id}',3)">${q.op3}</button>
-<button onclick="responderQuiz('${doc.id}',4)">${q.op4}</button>
-
-${isAdmin() ? `
-<button onclick="excluirQuiz('${doc.id}')">🗑 Excluir</button>
-` : ""}
-
-</div>
-`;
-
-});
-
-container.innerHTML = html;
-
-});
-
-}
-
 /* ================= ADMIN ================= */
 if(isAdmin()){
 

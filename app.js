@@ -1434,11 +1434,10 @@ function responderQuiz(id, resposta){
 function verRanking(){
 
 let p = get("pontos") || {};
-
 let lista = [];
 
 for(let u in p){
-lista.push({u, pts:p[u]});
+  lista.push({u, pts:p[u]});
 }
 
 lista.sort((a,b)=>b.pts-a.pts);
@@ -1446,9 +1445,11 @@ lista.sort((a,b)=>b.pts-a.pts);
 let html = "<h2>🏆 Ranking - Campeonato</h2>";
 
 if(lista.length === 0){
-html += "<div class='card'>Nenhum jogador ainda.</div>";
-el("conteudoArea").innerHTML = html;
-return;
+  html += "<div class='card'>Nenhum jogador ainda.</div>";
+  
+  html += botaoVoltar();
+  el("conteudoArea").innerHTML = html;
+  return;
 }
 
 html += `
@@ -1462,36 +1463,23 @@ html += `
 `;
 
 lista.forEach((x,index)=>{
-
-html += `
+  html += `
 <tr>
 <td>${index+1}º</td>
 <td>${x.u}</td>
 <td>${x.pts}</td>
 </tr>
 `;
-
 });
 
 html += `</table></div>`;
 
-el("conteudoArea").innerHTML = html;
-}
-
-/* ================= BOTÃO VOLTAR ================= */
+/* BOTÃO VOLTAR AGORA DENTRO DA FUNÇÃO */
 html += `
 <br>
 <div style="text-align:center;">
 <button onclick="abrirPagina('quiz')" 
-style="
-padding:10px 20px;
-background:#4CAF50;
-color:#fff;
-border:none;
-border-radius:10px;
-cursor:pointer;
-font-size:16px;
-">
+style="padding:10px 20px;background:#4CAF50;color:#fff;border:none;border-radius:10px;">
 ⬅️ Voltar para o Quiz
 </button>
 </div>

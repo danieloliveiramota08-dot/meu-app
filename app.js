@@ -1152,24 +1152,60 @@ function excluirPedido(id){
 // ================= ESTUDO BÍBLICO =================
 function estudoBiblico(){
 
-let lista = get("estudosBiblicos");
-if(!Array.isArray(lista)) lista = [];
+  const container = el("conteudoArea");
 
-let html = `<h2>📚 Estudo Bíblico</h2>`;
+  db.collection("estudos")
+    .orderBy("data", "desc")
+    .get()
+    .then((querySnapshot)=>{
 
-/* ================= ADMIN ================= */
-if(isAdmin()){
-html += `
-<div class="card">
-<h3>➕ Novo Estudo</h3>
+      let html = `<h2>📚 Estudo Bíblico</h2>`;
 
-<input id="estTema" placeholder="Tema do estudo">
-<textarea id="estTexto" placeholder="Conteúdo do estudo"></textarea>
-<input id="estRef" placeholder="Referência bíblica">
+      // ADMIN FORM
+      if(isAdmin()){
+        html += `
+        <div class="card">
+          <h3>➕ Novo Estudo</h3>
 
-<button onclick="addEstudo()">💾 Salvar Estudo</button>
-</div>
-`;
+          <input id="estTema" placeholder="Tema do estudo">
+          <textarea id="estTexto" placeholder="Conteúdo"></textarea>
+          <input id="estRef" placeholder="Referência bíblica">
+
+          <button onclick="addEstudo()">💾 Salvar</button>
+        </div>
+        `;
+      }
+
+      if(querySnapshot.empty){
+        html += `<div class="card">Nenhum estudo ainda.</div>`;
+      }
+
+      querySnapshot.forEach((doc)=>{
+
+        let e = doc.data();
+
+        html += `
+        <div class="card">
+          <h3>${e.tema}</h3>
+          <p>${e.texto}</p>
+          <small>${e.ref || ""}</small>
+        `;
+
+        if(isAdmin()){
+          html += `
+          <br><br>
+          <button onclick="delEstudo('${doc.id}')">
+            🗑️ Excluir
+          </button>
+          `;
+        }
+
+        html += `</div>`;
+      });
+
+      container.innerHTML = html;
+
+    });
 }
 
 /* ================= LISTA ================= */
@@ -1221,54 +1257,39 @@ alert("Modo edição ativado ✏️");
 // ================= SALVAR =================
 function addEstudo(){
 
-let lista = get("estudosBiblicos");
-if(!Array.isArray(lista)) lista = [];
+  let tema = el("estTema").value.trim();
+  let texto = el("estTexto").value.trim();
+  let ref = el("estRef").value.trim();
 
-let tema = el("estTema").value.trim();
-let texto = el("estTexto").value.trim();
-let ref = el("estRef").value.trim();
+  if(!tema || !texto){
+    alert("Preencha tudo");
+    return;
+  }
 
-if(!tema || !texto){
-alert("Preencha todos os campos!");
-return;
+  db.collection("estudos").add({
+    tema,
+    texto,
+    ref,
+    data: new Date()
+  })
+  .then(()=>{
+    alert("Estudo salvo ✅");
+    abrirPagina("estudoBiblico");
+  });
 }
-
-let editIndex = localStorage.getItem("editEstudoIndex");
-
-if(editIndex !== null){
-
-editIndex = parseInt(editIndex); // 🔥 FIX IMPORTANTE
-
-lista[editIndex] = {tema,texto,ref};
-
-localStorage.removeItem("editEstudoIndex");
-
-}else{
-
-lista.push({tema,texto,ref});
-}
-
-set("estudosBiblicos", lista);
-
-el("estTema").value = "";
-el("estTexto").value = "";
-el("estRef").value = "";
-
-// recarrega
-abrirPagina("estudoBiblico");
-}
-
 // ================= EXCLUIR =================
-function delEstudo(i){
+function delEstudo(id){
 
-let lista = get("estudosBiblicos");
-if(!Array.isArray(lista)) lista = [];
+  if(confirm("Excluir estudo?")){
 
-lista.splice(i,1);
+    db.collection("estudos")
+      .doc(id)
+      .delete()
+      .then(()=>{
+        abrirPagina("estudoBiblico");
+      });
 
-set("estudosBiblicos", lista);
-
-abrirPagina("estudoBiblico");
+  }
 }
 
 // ================= BIBLIA =================

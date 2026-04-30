@@ -173,27 +173,8 @@ navigator.serviceWorker.register("service-worker.js");
 }
 
 </script>
- <script src="https://www.gstatic.com/firebasejs/10.12.2/></script>
-
-<script src="https://www.gstatic.com/firebasejs/10.12.2/></script>
-
-<script src="app.js"></script>
-
-<script>
-  authDomain: "COLE_AQUI",
-  projectId: "COLE_AQUI",
-  storageBucket: "COLE_AQUI",
-  messagingSenderId: "COLE_AQUI",
-  appId: "COLE_AQUI"
-};
-
-
-const db = firebase.firestore();
-</script>
-  <!-- FIREBASE (USAR APENAS UMA VEZ) -->
-
+ <!-- FIREBASE (UMA VEZ SÓ - VERSÃO 8) -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
 <script>
@@ -208,13 +189,18 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-
-// 🔥 BANCO
 const db = firebase.firestore();
 </script>
 
-<!-- SEU SCRIPT (UMA VEZ SÓ) -->
+<!-- SEU SCRIPT -->
 <script src="app.js"></script>
-</body>
+
+<!-- SERVICE WORKER -->
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+}
+</script>
+
 </body>
 </html>

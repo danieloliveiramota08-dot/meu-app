@@ -1281,6 +1281,7 @@ function biblia(){
 }
 
 // ================= QUIZ =================
+// ================= QUIZ =================
 function quiz(){
 
   const container = el("conteudoArea");
@@ -1336,25 +1337,32 @@ function quiz(){
           <button onclick="responderQuiz('${doc.id}',4)">${x.op4}</button>
         `;
 
-function delQuiz(id){
+        // ✅ BOTÃO EXCLUIR (ADMIN)
+        if(isAdmin()){
+          html += `
+          <br><br>
+          <button onclick="delQuiz('${doc.id}')">
+            🗑️ Excluir pergunta
+          </button>
+          `;
+        }
 
-  console.log("Tentando excluir ID:", id);
-
-  if(confirm("Deseja excluir essa pergunta?")){
-
-    db.collection("quiz")
-      .doc(id)
-      .delete()
-      .then(()=>{
-        alert("Pergunta excluída ✅");
-        abrirPagina("quiz");
-      })
-      .catch((error)=>{
-        console.error("ERRO AO EXCLUIR:", error);
-        alert("Erro ao excluir ❌");
+        html += `</div>`;
       });
 
-  }
+      html += `
+      <button onclick="verRanking()">
+        🏆 Ver Ranking
+      </button>
+      `;
+
+      container.innerHTML = html;
+
+    })
+    .catch((error)=>{
+      console.error("Erro ao carregar quiz:", error);
+      container.innerHTML = "Erro ao carregar quiz ❌";
+    });
 
 }
 

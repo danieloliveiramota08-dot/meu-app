@@ -648,41 +648,37 @@ alert("Preencha todos os campos!");
 return;
 }
 
-let data = [{
+db.collection("pix").doc("oferta").set({
 nome,
 banco,
 chave
-}];
-
-set("pix_ofertas", data);
-
+})
+.then(() => {
+alert("PIX salvo com sucesso 💰");
 renderPix();
+})
+.catch((error)=>{
+console.error("Erro ao salvar PIX:", error);
+});
 
 }
 
 // ================= LISTAR PIX =================
 function renderPix(){
 
-let lista = get("pix_ofertas");
-
-if(!lista){
-lista = [];
-}
-
 let box = el("listaPix");
 
 if(!box) return;
 
-if(lista.length === 0){
+db.collection("pix").doc("oferta").get()
+.then((doc)=>{
 
-box.innerHTML = 
-"<p>Nenhuma informação de PIX cadastrada ainda 🙏</p>";
-
+if(!doc.exists){
+box.innerHTML = "<p>Nenhum PIX cadastrado ainda 🙏</p>";
 return;
-
 }
 
-let p = lista[0];
+let p = doc.data();
 
 box.innerHTML = `
 <div style="background:#f9f9f9;padding:15px;border-radius:12px;">
@@ -708,6 +704,11 @@ Excluir 🗑️
 </div>
 `;
 
+})
+.catch((error)=>{
+console.error("Erro ao carregar PIX:", error);
+});
+
 }
 
 // ================= EDITAR =================
@@ -725,11 +726,15 @@ function editarPix(){
   el("adminForm").style.display = "block";
 }
 
-// ================= EXCLUIR =================
+// ================= EXCLUIR PIX =================
 function excluirPix(){
 
-  set("pix_ofertas", []);
-  renderPix();
+db.collection("pix").doc("oferta").delete()
+.then(()=>{
+alert("PIX removido ❌");
+renderPix();
+});
+
 }
 
 // ================= AVISOS =================

@@ -1365,6 +1365,57 @@ function quiz(){
 
 }
 
+// ================= SALVAR =================
+function addQuiz(){
+
+  let pergunta = el("pergunta").value.trim();
+  let op1 = el("op1").value.trim();
+  let op2 = el("op2").value.trim();
+  let op3 = el("op3").value.trim();
+  let op4 = el("op4").value.trim();
+  let correta = parseInt(el("correta").value);
+
+  // ✅ VALIDAÇÃO
+  if(!pergunta || !op1 || !op2 || !op3 || !op4){
+    alert("Preencha todos os campos!");
+    return;
+  }
+
+  if(!correta || correta < 1 || correta > 4){
+    alert("Selecione a resposta correta!");
+    return;
+  }
+
+  // 🔥 SALVA NO FIREBASE
+  db.collection("quiz").add({
+    pergunta: pergunta,
+    op1: op1,
+    op2: op2,
+    op3: op3,
+    op4: op4,
+    correta: correta,
+    data: new Date()
+  })
+  .then(()=>{
+    alert("Pergunta salva com sucesso ✅");
+
+    // limpa campos
+    el("pergunta").value = "";
+    el("op1").value = "";
+    el("op2").value = "";
+    el("op3").value = "";
+    el("op4").value = "";
+
+    // recarrega quiz
+    abrirPagina("quiz");
+  })
+  .catch((error)=>{
+    console.error("Erro ao salvar pergunta:", error);
+    alert("Erro ao salvar ❌");
+  });
+
+}
+
 // ================= RESPONDER =================
 function responderQuiz(id, resposta){
 

@@ -1547,10 +1547,22 @@ function verRanking(){
         html += "</table>";
       }
 
-      html += `
-      <br>
-      <button onclick="abrirPagina('quiz')">⬅️ Voltar</button>
-      `;
+      html += `<br>`;
+
+// 🔐 BOTÃO SÓ PARA ADMIN
+if(isAdmin()){
+  html += `
+  <button onclick="resetRanking()"
+    style="background:red;color:#fff;padding:8px 12px;border:none;border-radius:6px;margin-bottom:10px;">
+    🗑 Resetar Ranking
+  </button>
+  <br>
+  `;
+}
+
+html += `
+<button onclick="abrirPagina('quiz')">⬅️ Voltar</button>
+`;
 
       el("conteudoArea").innerHTML = html;
 

@@ -1570,6 +1570,40 @@ html += `
 
 }
 
+function resetRanking(){
+
+  if(!isAdmin()){
+    alert("Acesso negado ❌");
+    return;
+  }
+
+  if(!confirm("Tem certeza que deseja apagar TODO o ranking? ⚠️")){
+    return;
+  }
+
+  db.collection("respostas")
+    .get()
+    .then((querySnapshot)=>{
+
+      let batch = db.batch();
+
+      querySnapshot.forEach((doc)=>{
+        batch.delete(doc.ref);
+      });
+
+      return batch.commit();
+    })
+    .then(()=>{
+      alert("Ranking resetado com sucesso 🗑");
+      verRanking();
+    })
+    .catch((error)=>{
+      console.error("Erro ao resetar ranking:", error);
+      alert("Erro ao resetar ❌");
+    });
+
+}
+
 // ================= EBD =================
 function ebd(){
 

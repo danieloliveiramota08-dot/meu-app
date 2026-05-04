@@ -1535,15 +1535,27 @@ function verRanking(){
         `;
 
         lista.forEach((x,i)=>{
-          html += `
-          <tr>
-            <td>${i+1}º</td>
-            <td>${x.u}</td>
-            <td>${x.pts}</td>
-          </tr>
-          `;
-        });
+  html += `
+  <tr>
+    <td>${i+1}º</td>
+    <td>${x.u}</td>
+    <td>${x.pts}</td>
+  `;
 
+  // 🔐 BOTÃO SÓ ADMIN
+  if(isAdmin()){
+    html += `
+    <td>
+      <button onclick="resetUserRanking('${x.u}')"
+        style="background:red;color:#fff;border:none;padding:5px 8px;border-radius:5px;cursor:pointer;">
+        🗑 Resetar
+      </button>
+    </td>
+    `;
+  }
+
+  html += `</tr>`;
+});
         html += "</table>";
       }
 
@@ -1570,20 +1582,26 @@ html += `
 
 }
 
-function resetRanking(){
+function resetUserRanking(user){
 
   if(!isAdmin()){
     alert("Acesso negado ❌");
     return;
   }
 
-  if(!confirm("Tem certeza que deseja apagar TODO o ranking? ⚠️")){
+  if(!confirm(`Resetar pontuação de ${user}? ⚠️`)){
     return;
   }
 
   db.collection("respostas")
+    .where("user", "==", user)
     .get()
     .then((querySnapshot)=>{
+
+      if(querySnapshot.empty){
+        alert("Esse usuário não tem respostas.");
+        return;
+      }
 
       let batch = db.batch();
 
@@ -1594,11 +1612,11 @@ function resetRanking(){
       return batch.commit();
     })
     .then(()=>{
-      alert("Ranking resetado com sucesso 🗑");
+      alert(`Ranking de ${user} resetado 🗑`);
       verRanking();
     })
     .catch((error)=>{
-      console.error("Erro ao resetar ranking:", error);
+      console.error("Erro ao resetar usuário:", error);
       alert("Erro ao resetar ❌");
     });
 

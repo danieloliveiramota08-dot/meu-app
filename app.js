@@ -1733,7 +1733,7 @@ e acompanhe estudos, cultos,
 avisos e muito mais 🙏
 </p>
 
-<a href="Igreja.apk" download>
+<a href="Igreja.apk" target="_blank">
 
 <button style="
 margin-top:20px;

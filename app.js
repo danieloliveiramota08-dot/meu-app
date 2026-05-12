@@ -1709,6 +1709,54 @@ function aniversariantes(){
 
 }
 
+// ================= INSTALAR APP =================
+function instalarApp(){
+
+let container = el("conteudoArea");
+
+container.innerHTML = `
+
+<div class="card" style="text-align:center;">
+
+<h2>📲 Instalar Aplicativo</h2>
+
+<img src="logo.png"
+style="
+width:120px;
+margin:20px 0;
+border-radius:20px;
+">
+
+<p>
+Baixe o aplicativo oficial da igreja
+e acompanhe estudos, cultos,
+avisos e muito mais 🙏
+</p>
+
+<a href="app.apk" download>
+
+<button style="
+margin-top:20px;
+padding:15px 25px;
+background:#4CAF50;
+color:white;
+border:none;
+border-radius:12px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+">
+
+⬇️ Baixar Aplicativo
+
+</button>
+
+</a>
+
+</div>
+`;
+}
+
 // ================= LOGOUT =================
 function logout(){
 location.reload();

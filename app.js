@@ -237,6 +237,11 @@ else if(p==="aniversariantes"){
 html = aniversariantes();
 }
 
+  else if(p==="chat"){
+chat();
+return;
+}
+
 /* MOSTRA NA TELA */
 
 if(html !== ""){
@@ -1755,6 +1760,121 @@ cursor:pointer;
 
 </div>
 `;
+}
+
+// ================= CHAT =================
+function chat(){
+
+const container = el("conteudoArea");
+
+container.innerHTML = `
+
+<h2>💬 Bate-papo da Igreja</h2>
+
+<div id="chatMensagens"
+style="
+height:400px;
+overflow-y:auto;
+background:#fff;
+padding:10px;
+border-radius:12px;
+margin-bottom:10px;
+">
+</div>
+
+<div style="display:flex;gap:10px;">
+
+<input id="msgChat"
+placeholder="Digite sua mensagem..."
+style="
+flex:1;
+padding:12px;
+border-radius:10px;
+border:1px solid #ccc;
+">
+
+<button onclick="enviarMensagem()"
+style="
+padding:12px;
+background:#4CAF50;
+color:white;
+border:none;
+border-radius:10px;
+">
+Enviar
+</button>
+
+</div>
+`;
+
+carregarMensagens();
+}
+
+// ================= ENVIAR MENSAGEM =================
+
+function enviarMensagem(){
+
+let texto = el("msgChat").value.trim();
+
+if(!texto) return;
+
+let user = get("usuarioLogado");
+
+db.collection("chat").add({
+
+nome: user.nome || "Membro",
+texto: texto,
+data: firebase.firestore.FieldValue.serverTimestamp()
+
+})
+.then(()=>{
+
+el("msgChat").value = "";
+
+});
+
+}
+
+// ================= CARREGAR MENSAGENS =================
+
+function carregarMensagens(){
+
+db.collection("chat")
+.orderBy("data")
+.onSnapshot((snapshot)=>{
+
+let html = "";
+
+snapshot.forEach((doc)=>{
+
+let m = doc.data();
+
+html += `
+
+<div style="
+background:#f5f5f5;
+padding:10px;
+border-radius:10px;
+margin-bottom:10px;
+">
+
+<strong>${m.nome}</strong>
+
+<p>${m.texto}</p>
+
+</div>
+`;
+
+});
+
+el("chatMensagens").innerHTML = html;
+
+// auto scroll
+let box = el("chatMensagens");
+box.scrollTop = box.scrollHeight;
+
+});
+
 }
 
 // ================= LOGOUT =================

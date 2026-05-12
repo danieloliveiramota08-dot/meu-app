@@ -1189,7 +1189,11 @@ function estudoBiblico(){
         html += `
         <div class="card">
           <h3>📖 ${e.tema}</h3>
-          <p>${e.texto}</p>
+
+        <p style="white-space: pre-line;">
+        ${e.texto}
+        </p>
+          
           <small>📌 ${e.ref || ""}</small>
         `;
 

@@ -1714,6 +1714,71 @@ function aniversariantes(){
 
 }
 
+// ================= INSTALAR PWA =================
+
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+
+e.preventDefault();
+
+deferredPrompt = e;
+
+mostrarBotaoInstalar();
+
+});
+
+function mostrarBotaoInstalar(){
+
+// evita botão duplicado
+if(document.getElementById("btnInstalar")) return;
+
+const botao = document.createElement("button");
+
+botao.id = "btnInstalar";
+
+botao.innerHTML = "📲 Instalar App";
+
+botao.style.position = "fixed";
+botao.style.bottom = "20px";
+botao.style.right = "20px";
+botao.style.padding = "14px 18px";
+botao.style.background = "#4CAF50";
+botao.style.color = "#fff";
+botao.style.border = "none";
+botao.style.borderRadius = "12px";
+botao.style.fontSize = "16px";
+botao.style.fontWeight = "bold";
+botao.style.cursor = "pointer";
+botao.style.zIndex = "9999";
+botao.style.boxShadow = "0 2px 10px rgba(0,0,0,0.2)";
+
+document.body.appendChild(botao);
+
+botao.addEventListener("click", async () => {
+
+botao.remove();
+
+if(deferredPrompt){
+
+deferredPrompt.prompt();
+
+const { outcome } = await deferredPrompt.userChoice;
+
+if(outcome === "accepted"){
+
+console.log("Aplicativo instalado ✅");
+
+}
+
+deferredPrompt = null;
+
+}
+
+});
+
+}
+
 // ================= LOGOUT =================
 function logout(){
 location.reload();

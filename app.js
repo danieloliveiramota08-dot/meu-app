@@ -1766,77 +1766,27 @@ function mudarFotoPerfil(event) {
   }
 }
 
-function salvarPerfil() {
-  const nome = document.getElementById("inputNome").value;
-
-  document.getElementById("nomeUsuario").innerText = nome;
-
-  localStorage.setItem("nomeUsuario", nome);
-
-  alert("Perfil salvo com sucesso!");
-}
-
-window.addEventListener("load", () => {
-
-  const foto = localStorage.getItem("fotoPerfil");
-  const nome = localStorage.getItem("nomeUsuario");
-
-  const img = document.getElementById("fotoPerfil");
-  const input = document.getElementById("inputNome");
-  const nomeEl = document.getElementById("nomeUsuario");
-
-  if(img && foto){
-    img.src = foto;
-  }
-
-  if(nomeEl && nome){
-    nomeEl.innerText = nome;
-  }
-
-  if(input && nome){
-    input.value = nome;
-  }
-
-});
-
 // ================= CARREGAR PERFIL =================
 function carregarPerfil() {
-
   const user = get("usuarioLogado");
 
-  console.log("DEBUG USER:", user);
+  if (!user) return;
 
-  if (!user) {
-    alert("Usuário não encontrado");
-    return;
-  }
-
-  // nome
-  document.getElementById("nomeUsuario").innerText =
-    user.nome || "Sem nome";
-
-  // CPF
+  const nomeEl = document.getElementById("nomeUsuario");
   const cpfEl = document.getElementById("cpfUsuario");
-  if (cpfEl) {
-    cpfEl.innerText = user.cpf || "Não informado";
-  }
-
-  // celular
   const celEl = document.getElementById("celularUsuario");
-  if (celEl) {
-    celEl.innerText = user.celular || "Não informado";
-  }
-
-  // input nome (se existir)
   const input = document.getElementById("inputNome");
-  if (input) {
-    input.value = user.nome || "";
-  }
+  const fotoEl = document.getElementById("fotoPerfil");
 
-  // foto
+  if (nomeEl) nomeEl.innerText = user.nome || "Sem nome";
+  if (cpfEl) cpfEl.innerText = user.cpf || "Não informado";
+  if (celEl) celEl.innerText = user.celular || "Não informado";
+
+  if (input) input.value = user.nome || "";
+
   const foto = localStorage.getItem("fotoPerfil");
-  if (foto) {
-    document.getElementById("fotoPerfil").src = foto;
+  if (foto && fotoEl) {
+    fotoEl.src = foto;
   }
 }
 
@@ -1844,10 +1794,16 @@ function carregarPerfil() {
 
 function salvarPerfil() {
   const input = document.getElementById("inputNome");
-
-  if(!input) return;
+  if (!input) return;
 
   const nome = input.value;
+
+  const user = get("usuarioLogado");
+
+  if (user) {
+    user.nome = nome;
+    set("usuarioLogado", user);
+  }
 
   document.getElementById("nomeUsuario").innerText = nome;
 

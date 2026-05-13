@@ -1,14 +1,21 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<link rel="manifest" href="manifest.json">
-  
-<meta name="theme-color" content="#4CAF50">
 
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Igreja Deus de Aliança</title>
 
 <link rel="stylesheet" href="style.css">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Igreja Deus de Aliança</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+
+<meta name="theme-color" content="#4CAF50">
 
 <style>
 
@@ -87,20 +94,29 @@ border-radius:8px;
 </style>
 
 </head>
+
 <body>
 
 <!-- ================= LOGIN ================= -->
 <div id="loginPage" class="page" style="display:flex;">
 
-<h1 style="color:#c8b89c;">⛪ Igreja Deus de Aliança</h1>
+<h1 style="color:#c8b89c;">
+⛪ Igreja Deus de Aliança
+</h1>
 
 <h2>Login</h2>
 
 <input id="loginUser" placeholder="Usuário">
-<input id="loginPass" type="password" placeholder="Senha">
+
+<input id="loginPass"
+type="password"
+placeholder="Senha">
 
 <button onclick="login()">Entrar</button>
-<button onclick="showRegister()">Cadastrar</button>
+
+<button onclick="showRegister()">
+Cadastrar
+</button>
 
 </div>
 
@@ -110,15 +126,26 @@ border-radius:8px;
 <h2>Cadastro</h2>
 
 <input id="nome" placeholder="Nome">
+
 <input id="cpf" placeholder="CPF">
+
 <input id="nascimento" type="date">
+
 <input id="celular" placeholder="Celular">
 
 <input id="novoLogin" placeholder="Login">
-<input id="novaSenha" type="password" placeholder="Senha">
 
-<button onclick="cadastrar()">Salvar</button>
-<button onclick="voltarLoginTela()">Voltar</button>
+<input id="novaSenha"
+type="password"
+placeholder="Senha">
+
+<button onclick="cadastrar()">
+Salvar
+</button>
+
+<button onclick="voltarLoginTela()">
+Voltar
+</button>
 
 </div>
 
@@ -127,28 +154,87 @@ border-radius:8px;
 
 <h2>⛪ Igreja Deus de Aliança</h2>
 
+<!-- ADMIN -->
 <div id="adminButtons" style="display:none;">
 
-<button onclick="abrirPagina('membros')">👥 MEMBROS CADASTRADOS</button>
-<button class="menuBtn" onclick="abrirPagina('financeiro')">📊 FINANCEIRO</button>
-<button class="menuBtn" onclick="abrirPagina('estudoBiblico')">📚 ESTUDO BIBLICO</button>
-<button onclick="abrirPagina('quiz')">🧠 QUIZ BÍBLICO</button>
-<button onclick="abrirPagina('pix')">💰 OFERTAS</button>
-<button class="menuBtn" onclick="abrirPagina('pedidosRecebidos')">📋 PEDIDOS RECEBIDOS</button>
+<button onclick="abrirPagina('membros')">
+👥 MEMBROS CADASTRADOS
+</button>
+
+<button class="menuBtn"
+onclick="abrirPagina('financeiro')">
+📊 FINANCEIRO
+</button>
+
+<button class="menuBtn"
+onclick="abrirPagina('estudoBiblico')">
+📚 ESTUDO BÍBLICO
+</button>
+
+<button onclick="abrirPagina('quiz')">
+🧠 QUIZ BÍBLICO
+</button>
+
+<button onclick="abrirPagina('pix')">
+💰 OFERTAS
+</button>
+
+<button class="menuBtn"
+onclick="abrirPagina('pedidosRecebidos')">
+📋 PEDIDOS RECEBIDOS
+</button>
 
 </div>
 
-<button class="menuBtn" onclick="abrirPagina('cultos')">📅 CULTOS</button>
-<button class="menuBtn" onclick="abrirPagina('avisos')">📢 AVISOS</button>
-<button class="menuBtn" onclick="abrirPagina('pedidos')">🙏 PEDIDOS DE ORAÇÃO</button>
-<button onclick="abrirPagina('pix')">💰 OFERTAS</button>
-<button class="menuBtn" onclick="abrirPagina('biblia')">📖 BIBLIA</button>
-<button class="menuBtn" onclick="abrirPagina('estudoBiblico')">📚 ESTUDO BIBLICO</button>
-<button onclick="abrirPagina('quiz')">🧠 QUIZ BÍBLICO</button>
-<button class="menuBtn" onclick="abrirPagina('aniversariantes')">🎂 ANIVERSARIANTES</button>
-  
-<button class="menuBtn" onclick="logout()">🚪 Sair</button>
-  
+<!-- MENU NORMAL -->
+<button class="menuBtn"
+onclick="abrirPagina('cultos')">
+📅 CULTOS
+</button>
+
+<button class="menuBtn"
+onclick="abrirPagina('avisos')">
+📢 AVISOS
+</button>
+
+<button class="menuBtn"
+onclick="abrirPagina('pedidos')">
+🙏 PEDIDOS DE ORAÇÃO
+</button>
+
+<button onclick="abrirPagina('pix')">
+💰 OFERTAS
+</button>
+
+<button class="menuBtn"
+onclick="abrirPagina('biblia')">
+📖 BÍBLIA
+</button>
+
+<button class="menuBtn"
+onclick="abrirPagina('estudoBiblico')">
+📚 ESTUDO BÍBLICO
+</button>
+
+<button onclick="abrirPagina('quiz')">
+🧠 QUIZ BÍBLICO
+</button>
+
+<button class="menuBtn"
+onclick="abrirPagina('aniversariantes')">
+🎂 ANIVERSARIANTES
+</button>
+
+<button class="menuBtn"
+onclick="abrirPagina('chat')">
+💬 CHAT
+</button>
+
+<button class="menuBtn"
+onclick="logout()">
+🚪 Sair
+</button>
+
 </div>
 
 <!-- ================= CONTEÚDO ================= -->
@@ -156,46 +242,60 @@ border-radius:8px;
 
 <div id="conteudoArea"></div>
 
-<button onclick="voltarMenu()">⬅ Voltar</button>
+<button onclick="voltarMenu()">
+⬅ Voltar
+</button>
 
 </div>
 
-<!-- ================= JS ================= -->
+<!-- ================= APP JS ================= -->
 <script src="app.js"></script>
 
-<script>
-
-if ("serviceWorker" in navigator) {
-
-navigator.serviceWorker.register("service-worker.js");
-
-}
-
-</script>
- <!-- FIREBASE (UMA VEZ SÓ - VERSÃO 8) -->
+<!-- ================= FIREBASE ================= -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
 <script>
+
 const firebaseConfig = {
-  apiKey: "AIzaSyDCPfrZYmDgYl47x8c423Qilpfl3x98E4g",
-  authDomain: "igreja-deus-alianca.firebaseapp.com",
-  projectId: "igreja-deus-alianca",
-  storageBucket: "igreja-deus-alianca.firebasestorage.app",
-  messagingSenderId: "341543377138",
-  appId: "1:341543377138:web:96ce4cbb142cf39e90986b",
-  measurementId: "G-X7R7NWCB9W"
+
+apiKey: "SUA_API_KEY",
+
+authDomain: "SEU_DOMINIO",
+
+projectId: "SEU_PROJECT_ID",
+
+storageBucket: "SEU_BUCKET",
+
+messagingSenderId: "SEU_SENDER_ID",
+
+appId: "SEU_APP_ID"
+
 };
 
 firebase.initializeApp(firebaseConfig);
+
 const db = firebase.firestore();
+
 </script>
 
-<!-- SERVICE WORKER -->
+<!-- ================= SERVICE WORKER ================= -->
 <script>
+
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
+
+navigator.serviceWorker
+.register("service-worker.js")
+
+.then(() => {
+
+console.log("Service Worker registrado ✅");
+
+});
+
 }
+
 </script>
 
 </body>

@@ -1820,6 +1820,16 @@ function salvarPerfil() {
   alert("Perfil salvo com sucesso!");
 }
 
+// ================= VOLTAR MENU =================
+
+function voltarMenuPerfil(){
+  const perfil = document.getElementById("perfil");
+  const menu = document.getElementById("menuPage");
+
+  if(perfil) perfil.style.display = "none";
+  if(menu) menu.style.display = "flex";
+}
+
 // ================= LOGOUT =================
 function logout(){
 location.reload();

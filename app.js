@@ -176,78 +176,40 @@ el("registerPage").style.display = "flex";
 
 function abrirPagina(p){
 
-el("menuPage").style.display="none";
-el("conteudoPage").style.display="flex";
+  // esconde tudo
+  el("menuPage").style.display = "none";
+  el("conteudoPage").style.display = "none";
 
-let html = "";
+  const perfil = el("perfil");
+  if(perfil) perfil.style.display = "none";
 
-/* ROTAS */
+  // abre perfil
+  if(p === "perfil"){
+    if(perfil) perfil.style.display = "flex";
+    return;
+  }
 
-if(p==="membros"){
-adminMembros();
-return;
-}
+  // abre conteúdo padrão
+  el("conteudoPage").style.display = "flex";
 
-else if(p==="financeiro"){
-financeiro();
-return;
-}
+  let html = "";
 
-else if(p==="ebd"){
-ebd();
-return;
-}
+  if(p==="membros"){ adminMembros(); return; }
+  else if(p==="financeiro"){ financeiro(); return; }
+  else if(p==="quiz"){ html = quiz(); }
+  else if(p==="pix"){ ofertas(); return; }
+  else if(p==="avisos"){ html = avisos(); }
+  else if(p==="cultos"){ html = cultos(); }
+  else if(p==="pedidos"){ pedidosOracao(); return; }
+  else if(p==="pedidosRecebidos"){ pedidosRecebidos(); return; }
+  else if(p==="biblia"){ html = biblia(); }
+  else if(p==="estudoBiblico"){ html = estudoBiblico(); }
+  else if(p==="aniversariantes"){ html = aniversariantes(); }
+  else if(p==="chat"){ chat(); return; }
 
-else if(p==="quiz"){
-html = quiz();
-}
-
-else if(p==="pix"){
-ofertas();
-return;
-}
-
-else if(p==="avisos"){
-html = avisos();
-}
-
-else if(p==="cultos"){
-html = cultos();
-}
-
-else if(p==="pedidos"){
-pedidosOracao();
-return;
-}
-
-else if(p==="pedidosRecebidos"){
-pedidosRecebidos();
-return;
-}
-
-else if(p==="biblia"){
-html = biblia();
-}
-
-else if(p==="estudoBiblico"){
-html = estudoBiblico();
-}
-
-else if(p==="aniversariantes"){
-html = aniversariantes();
-}
-
-  else if(p==="chat"){
-chat();
-return;
-}
-
-/* MOSTRA NA TELA */
-
-if(html !== ""){
-el("conteudoArea").innerHTML = html;
-}
-
+  if(html !== ""){
+    el("conteudoArea").innerHTML = html;
+  }
 }
 
 
@@ -1809,18 +1771,43 @@ function salvarPerfil() {
 }
 
 window.addEventListener("load", () => {
+
   const foto = localStorage.getItem("fotoPerfil");
   const nome = localStorage.getItem("nomeUsuario");
 
-  if (foto) {
-    document.getElementById("fotoPerfil").src = foto;
+  const img = document.getElementById("fotoPerfil");
+  const input = document.getElementById("inputNome");
+  const nomeEl = document.getElementById("nomeUsuario");
+
+  if(img && foto){
+    img.src = foto;
   }
 
-  if (nome) {
-    document.getElementById("nomeUsuario").innerText = nome;
-    document.getElementById("inputNome").value = nome;
+  if(nomeEl && nome){
+    nomeEl.innerText = nome;
   }
+
+  if(input && nome){
+    input.value = nome;
+  }
+
 });
+
+// ================= SALVAR PERFIL =================
+
+function salvarPerfil() {
+  const input = document.getElementById("inputNome");
+
+  if(!input) return;
+
+  const nome = input.value;
+
+  document.getElementById("nomeUsuario").innerText = nome;
+
+  localStorage.setItem("nomeUsuario", nome);
+
+  alert("Perfil salvo com sucesso!");
+}
 
 // ================= LOGOUT =================
 function logout(){

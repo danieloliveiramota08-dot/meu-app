@@ -242,29 +242,22 @@ onclick="logout()">
 </div>
 
 <!-- ================= PERFIL ================= -->
-<div id="perfil" class="page" style="display:none; text-align:center;">
+<div id="perfil" class="page">
 
   <h2>👤 Meu Perfil</h2>
 
-  <!-- FOTO -->
-  <img id="fotoPerfil" src="default-profile.png"
-       style="width:120px;height:120px;border-radius:50%;object-fit:cover;margin:10px;border:2px solid #4CAF50;">
+  <img id="fotoPerfil"
+       src="default-profile.png"
+       style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:2px solid #4CAF50;">
 
   <br>
 
-  <!-- INPUT FOTO -->
   <input type="file" accept="image/*" onchange="mudarFotoPerfil(event)">
 
-  <br><br>
+  <h3 id="nomeUsuario">Nome</h3>
 
-  <!-- NOME -->
-  <input type="text" id="inputNome" placeholder="Seu nome">
-
-  <br>
-
-  <button onclick="salvarPerfil()">Salvar Perfil</button>
-
-  <h3 id="nomeUsuario">Nome do usuário</h3>
+  <p><b>CPF:</b> <span id="cpfUsuario"></span></p>
+  <p><b>Celular:</b> <span id="celularUsuario"></span></p>
 
 </div>
   

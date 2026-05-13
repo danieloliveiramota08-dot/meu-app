@@ -1779,6 +1779,49 @@ deferredPrompt = null;
 
 }
 
+// ================= MUDAR FOTO PERFIL =================
+
+function mudarFotoPerfil(event) {
+  const file = event.target.files[0];
+
+  if (file) {
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+      const img = e.target.result;
+
+      document.getElementById("fotoPerfil").src = img;
+      localStorage.setItem("fotoPerfil", img);
+    };
+
+    reader.readAsDataURL(file);
+  }
+}
+
+function salvarPerfil() {
+  const nome = document.getElementById("inputNome").value;
+
+  document.getElementById("nomeUsuario").innerText = nome;
+
+  localStorage.setItem("nomeUsuario", nome);
+
+  alert("Perfil salvo com sucesso!");
+}
+
+window.addEventListener("load", () => {
+  const foto = localStorage.getItem("fotoPerfil");
+  const nome = localStorage.getItem("nomeUsuario");
+
+  if (foto) {
+    document.getElementById("fotoPerfil").src = foto;
+  }
+
+  if (nome) {
+    document.getElementById("nomeUsuario").innerText = nome;
+    document.getElementById("inputNome").value = nome;
+  }
+});
+
 // ================= LOGOUT =================
 function logout(){
 location.reload();

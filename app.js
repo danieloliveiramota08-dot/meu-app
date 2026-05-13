@@ -184,10 +184,16 @@ function abrirPagina(p){
   if(perfil) perfil.style.display = "none";
 
   // abre perfil
-  if(p === "perfil"){
-    if(perfil) perfil.style.display = "flex";
-    return;
+if(p === "perfil"){
+  const perfil = el("perfil");
+
+  if(perfil){
+    perfil.style.display = "flex";
+    carregarPerfil(); // 🔥 carrega dados do usuário
   }
+
+  return;
+}
 
   // abre conteúdo padrão
   el("conteudoPage").style.display = "flex";

@@ -1804,23 +1804,36 @@ function carregarPerfil() {
 
   const user = get("usuarioLogado");
 
-  if (!user) return;
+  console.log("DEBUG USER:", user);
 
-  // dados do cadastro (Firebase)
-  document.getElementById("nomeUsuario").innerText = user.nome || "Sem nome";
-
-  document.getElementById("inputNome").value = user.nome || "";
-
-  // opcional mostrar outros dados
-  if (document.getElementById("cpfUsuario")) {
-    document.getElementById("cpfUsuario").innerText = user.cpf || "-";
+  if (!user) {
+    alert("Usuário não encontrado");
+    return;
   }
 
-  if (document.getElementById("celularUsuario")) {
-    document.getElementById("celularUsuario").innerText = user.celular || "-";
+  // nome
+  document.getElementById("nomeUsuario").innerText =
+    user.nome || "Sem nome";
+
+  // CPF
+  const cpfEl = document.getElementById("cpfUsuario");
+  if (cpfEl) {
+    cpfEl.innerText = user.cpf || "Não informado";
   }
 
-  // foto salva localmente
+  // celular
+  const celEl = document.getElementById("celularUsuario");
+  if (celEl) {
+    celEl.innerText = user.celular || "Não informado";
+  }
+
+  // input nome (se existir)
+  const input = document.getElementById("inputNome");
+  if (input) {
+    input.value = user.nome || "";
+  }
+
+  // foto
   const foto = localStorage.getItem("fotoPerfil");
   if (foto) {
     document.getElementById("fotoPerfil").src = foto;

@@ -1751,19 +1751,22 @@ deferredPrompt = null;
 
 function mudarFotoPerfil(event) {
   const file = event.target.files[0];
+  const user = get("usuarioLogado");
 
-  if (file) {
-    const reader = new FileReader();
+  if (!file || !user) return;
 
-    reader.onload = function(e) {
-      const img = e.target.result;
+  const reader = new FileReader();
 
-      document.getElementById("fotoPerfil").src = img;
-      localStorage.setItem("fotoPerfil", img);
-    };
+  reader.onload = function(e) {
+    const img = e.target.result;
 
-    reader.readAsDataURL(file);
-  }
+    const fotoKey = `fotoPerfil_${user.login}`;
+
+    document.getElementById("fotoPerfil").src = img;
+    localStorage.setItem(fotoKey, img);
+  };
+
+  reader.readAsDataURL(file);
 }
 
 // ================= CARREGAR PERFIL =================
@@ -1775,16 +1778,21 @@ function carregarPerfil() {
   const nomeEl = document.getElementById("nomeUsuario");
   const cpfEl = document.getElementById("cpfUsuario");
   const celEl = document.getElementById("celularUsuario");
+  const loginEl = document.getElementById("loginUsuario");
   const input = document.getElementById("inputNome");
   const fotoEl = document.getElementById("fotoPerfil");
 
   if (nomeEl) nomeEl.innerText = user.nome || "Sem nome";
   if (cpfEl) cpfEl.innerText = user.cpf || "Não informado";
   if (celEl) celEl.innerText = user.celular || "Não informado";
+  if (loginEl) loginEl.innerText = user.login || "Não informado";
 
   if (input) input.value = user.nome || "";
 
-  const foto = localStorage.getItem("fotoPerfil");
+  // FOTO (corrigido no problema 2)
+  const fotoKey = `fotoPerfil_${user.login}`;
+  const foto = localStorage.getItem(fotoKey);
+
   if (foto && fotoEl) {
     fotoEl.src = foto;
   }

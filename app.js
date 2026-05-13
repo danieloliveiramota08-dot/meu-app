@@ -1793,6 +1793,34 @@ window.addEventListener("load", () => {
 
 });
 
+// ================= CARREGAR PERFIL =================
+function carregarPerfil() {
+
+  const user = get("usuarioLogado");
+
+  if (!user) return;
+
+  // dados do cadastro (Firebase)
+  document.getElementById("nomeUsuario").innerText = user.nome || "Sem nome";
+
+  document.getElementById("inputNome").value = user.nome || "";
+
+  // opcional mostrar outros dados
+  if (document.getElementById("cpfUsuario")) {
+    document.getElementById("cpfUsuario").innerText = user.cpf || "-";
+  }
+
+  if (document.getElementById("celularUsuario")) {
+    document.getElementById("celularUsuario").innerText = user.celular || "-";
+  }
+
+  // foto salva localmente
+  const foto = localStorage.getItem("fotoPerfil");
+  if (foto) {
+    document.getElementById("fotoPerfil").src = foto;
+  }
+}
+
 // ================= SALVAR PERFIL =================
 
 function salvarPerfil() {
